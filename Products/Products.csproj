@@ -12,8 +12,8 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CategoryCommandMicroservice.Common\Orders.Common.csproj" />
-    <ProjectReference Include="..\CommandMicroservice.Common\Products.Common.csproj" />
+    <ProjectReference Include="..\Orders.Common\Orders.Common.csproj" />
+    <ProjectReference Include="..\Products.Common\Products.Common.csproj" />
     <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\EventStore\EventStore.csproj" />
     <ProjectReference Include="..\SnapshotStore\SnapshotStore.csproj" />

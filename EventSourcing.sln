@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Products", "CommandMicroservice\Products.csproj", "{F9546C62-E14F-43CF-93E6-7C52A78E4002}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Products", "Products\Products.csproj", "{F9546C62-E14F-43CF-93E6-7C52A78E4002}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventStore", "EventStore\EventStore.csproj", "{403718A8-FBA2-46B0-A003-05C63479DE49}"
 EndProject
@@ -11,17 +11,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SnapshotStore", "SnapshotSt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestClient", "TestClient\TestClient.csproj", "{F0D102F9-4EBD-4087-994E-004ABE9A6537}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Products.Common", "CommandMicroservice.Common\Products.Common.csproj", "{19CBEE04-B905-47AD-89C3-711A4CE6EFFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Products.Common", "Products.Common\Products.Common.csproj", "{19CBEE04-B905-47AD-89C3-711A4CE6EFFB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Products.Query", "QueryMicroservice\Products.Query.csproj", "{3E04686E-A129-493A-A90E-EC59D607524B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Products.Query", "Products.Query\Products.Query.csproj", "{3E04686E-A129-493A-A90E-EC59D607524B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Projections", "Projections\Projections.csproj", "{805D4423-6078-46BF-8D72-1356B490681C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orders", "CategoryCommandService\Orders.csproj", "{C3451E54-0FD2-43C7-88B4-E51F9B4A3595}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orders", "Orders\Orders.csproj", "{C3451E54-0FD2-43C7-88B4-E51F9B4A3595}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{B291310E-6A49-4C5C-9959-1238AD9CADE3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orders.Common", "CategoryCommandMicroservice.Common\Orders.Common.csproj", "{73AEA2EF-E019-4EE3-957F-0C0CD853FE80}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orders.Common", "Orders.Common\Orders.Common.csproj", "{73AEA2EF-E019-4EE3-957F-0C0CD853FE80}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Microservices", "Microservices", "{46B5B5BB-3392-4671-83A2-D94C4B585209}"
 EndProject
