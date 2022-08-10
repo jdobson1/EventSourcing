@@ -11,8 +11,8 @@
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.0.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CategoryCommandMicroservice.Common\Orders.Common.csproj" />
-    <ProjectReference Include="..\CommandMicroservice.Common\Products.Common.csproj" />
+    <ProjectReference Include="..\Orders.Common\Orders.Common.csproj" />
+    <ProjectReference Include="..\Products.Common\Products.Common.csproj" />
     <ProjectReference Include="..\Projections\Projections.csproj" />
   </ItemGroup>
   <ItemGroup>

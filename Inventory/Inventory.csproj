@@ -11,10 +11,9 @@
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.0.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CategoryCommandMicroservice.Common\Orders.Common.csproj" />
-    <ProjectReference Include="..\CategoryCommandService\Orders.csproj" />
     <ProjectReference Include="..\EventStore\EventStore.csproj" />
     <ProjectReference Include="..\Inventory.Common\Inventory.Common.csproj" />
+    <ProjectReference Include="..\Orders.Common\Orders.Common.csproj" />
     <ProjectReference Include="..\Projections\Projections.csproj" />
     <ProjectReference Include="..\ShoppingCart.Common\ShoppingCart.Common.csproj" />
     <ProjectReference Include="..\Subscriptions\Subscriptions.csproj" />
