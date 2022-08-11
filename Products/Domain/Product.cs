@@ -21,6 +21,8 @@ namespace Products.Domain
                 Apply(new ProductNameChanged(Id, value));
             }
         }
+
+        #region Constructors
         public Product(Guid id, string name) : base(id)
         {
             Apply(new ProductCreated(Id, name));
@@ -30,6 +32,8 @@ namespace Products.Domain
         {
             Apply(events);
         }
+
+        #endregion
 
         private void When(ProductCreated @event)
         {

@@ -14,6 +14,7 @@
     <ProjectReference Include="..\EventStore\EventStore.csproj" />
     <ProjectReference Include="..\Inventory.Common\Inventory.Common.csproj" />
     <ProjectReference Include="..\Orders.Common\Orders.Common.csproj" />
+    <ProjectReference Include="..\Products.Common\Products.Common.csproj" />
     <ProjectReference Include="..\Projections\Projections.csproj" />
     <ProjectReference Include="..\ShoppingCart.Common\ShoppingCart.Common.csproj" />
     <ProjectReference Include="..\Subscriptions\Subscriptions.csproj" />

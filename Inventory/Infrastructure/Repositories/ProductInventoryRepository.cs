@@ -7,18 +7,18 @@ using Inventory.Domain;
 
 namespace Inventory.Infrastructure.Repositories
 {
-    public class ProductRepository : IRepository<ProductInventory>
+    public class ProductInventoryRepository : IRepository<ProductInventory>
     {
         private readonly IEventStore _eventStore;
 
-        public ProductRepository(IEventStore eventStore)
+        public ProductInventoryRepository(IEventStore eventStore)
         {
             _eventStore = eventStore;
         }
 
         public async Task<ProductInventory> GetById(Guid id)
         {
-            var streamId = $"product:{id}";
+            var streamId = $"productinv:{id}";
 
             var stream = await _eventStore.LoadStreamAsync(streamId);
 
@@ -29,7 +29,7 @@ namespace Inventory.Infrastructure.Repositories
         {
             if (aggregate.Events.Any())
             {
-                var streamId = $"product:{aggregate.Id}";
+                var streamId = $"productinv:{aggregate.Id}";
 
               await _eventStore.AppendToStreamAsync(
                     streamId,

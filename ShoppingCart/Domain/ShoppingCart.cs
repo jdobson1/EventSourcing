@@ -3,7 +3,6 @@ using EventStore;
 using ShoppingCart.Common.Events;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ShoppingCart.Domain
 {
@@ -11,6 +10,9 @@ namespace ShoppingCart.Domain
     {
         private List<ShoppingCartItem> _items;
         public IReadOnlyList<ShoppingCartItem> Items => _items;
+
+        #region Constructors
+
         public ShoppingCart(Guid cartId) : base(cartId)
         {
             Apply(new ShoppingCartCreated(cartId));
@@ -20,10 +22,8 @@ namespace ShoppingCart.Domain
         {
             Apply(events);
         }
-        protected override void Mutate(IEvent @event)
-        {
-            ((dynamic)this).When((dynamic)@event);
-        }
+
+        #endregion
 
         public void AddItem(Guid productId, int quantity)
         {
@@ -38,6 +38,11 @@ namespace ShoppingCart.Domain
         private void When(ItemAddedToShoppingCart @event)
         {
             _items.Add(new ShoppingCartItem(@event.ProductId, @event.Quantity));
+        }
+
+        protected override void Mutate(IEvent @event)
+        {
+            ((dynamic)this).When((dynamic)@event);
         }
     }
 }

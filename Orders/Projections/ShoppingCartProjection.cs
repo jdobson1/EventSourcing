@@ -1,6 +1,7 @@
 ﻿using Orders.Projections.Views;
 using Projections;
 using ShoppingCart.Common.Events;
+using System.Linq;
 
 namespace Orders.Projections
 {
@@ -14,12 +15,13 @@ namespace Orders.Projections
 
         private void WhenCreated(ShoppingCartCreated shoppingCartCreated, ShoppingCartView view)
         {
-            view.ShoppingCartId = shoppingCartCreated.ShoppingCartId;
+            view.ShoppingCarts.Add(new Views.ShoppingCart(shoppingCartCreated.ShoppingCartId));
         }
 
         private void WhenItemAddedToCart(ItemAddedToShoppingCart itemAddedToShoppingCart, ShoppingCartView view)
         {
-            view.Items.Add(new ShoppingCart.Common.Dtos.ShoppingCartItemDto
+            var shoppingCart = view.ShoppingCarts.SingleOrDefault(x => x.ShoppingCartId == itemAddedToShoppingCart.ShoppingCartId);
+            shoppingCart.Items.Add(new ShoppingCart.Common.Dtos.ShoppingCartItemDto
             {
                 ProductId = itemAddedToShoppingCart.ProductId,
                 Quantity = itemAddedToShoppingCart.Quantity

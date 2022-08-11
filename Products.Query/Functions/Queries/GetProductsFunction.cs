@@ -9,8 +9,6 @@ using Newtonsoft.Json;
 using Projections;
 using Products.Common.Queries;
 using Products.Query.Projections.Views;
-using System.Collections.Generic;
-using Products.Common.Dtos;
 
 namespace Products.Query.Functions.Queries
 {
@@ -32,8 +30,10 @@ namespace Products.Query.Functions.Queries
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             GetProducts getProductsQuery = JsonConvert.DeserializeObject<GetProducts>(requestBody);
+
             var productsView = await _viewRepository.LoadViewAsync(nameof(ProductsView));
             var productView = JsonConvert.DeserializeObject<ProductsView>(productsView.Payload.ToString());
+
             return new OkObjectResult(productView.Products);
         }
     }

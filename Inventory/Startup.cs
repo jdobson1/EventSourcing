@@ -9,6 +9,7 @@ using Inventory.Infrastructure.Repositories;
 using Inventory.Domain;
 using Orders.Common.Events;
 using Inventory.EventHandlers;
+using Products.Common.Events;
 
 [assembly: FunctionsStartup(typeof(Inventory.Startup))]
 
@@ -22,9 +23,7 @@ namespace Inventory
 
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            //builder.Services.AddHttpClient();
-
-            builder.Services.AddTransient<IRepository<ProductInventory>, ProductRepository>();
+            builder.Services.AddTransient<IRepository<ProductInventory>, ProductInventoryRepository>();
             builder.Services.AddSingleton<IEventStore>((s) =>
             {
                 return new CosmosEventStore(this, EndpointUrl, AuthorizationKey, DatabaseId);
@@ -36,9 +35,6 @@ namespace Inventory
            
 
             // builder.Services.AddSingleton<ILoggerProvider, MyLoggerProvider>();
-
-            //todo: add database initializer to add collections for events and snapshots
-            //Task.Run(async () => await InitializeSubscriptions());
         }
 
         public Type GetEventType(string typeName)
@@ -51,6 +47,10 @@ namespace Inventory
 
             if (type != null) return type;
 
+            type = Type.GetType($"Products.Common.Events.{typeName}, Products.Common");
+
+            if (type != null) return type;
+
             return Type.GetType($"ShoppingCart.Common.Events.{typeName}, ShoppingCart.Common");
         }
 
@@ -58,11 +58,16 @@ namespace Inventory
         {
             ISubscriptionEngine subscriptionEngine = new SubscriptionEngine(this, EndpointUrl, "inventory", AuthorizationKey, DatabaseId);
             subscriptionEngine.Subscribe(
-                new Subscription 
-                { 
-                    EventType = typeof(OrderSubmitted).AssemblyQualifiedName, 
-                    EventHandlerType = typeof(OrderSubmittedEventHandler).AssemblyQualifiedName 
+                new Subscription
+                {
+                    EventType = typeof(OrderSubmitted).AssemblyQualifiedName,
+                    EventHandlerType = typeof(OrderSubmittedEventHandler).AssemblyQualifiedName
                 });
+            subscriptionEngine.Subscribe(new Subscription
+            {
+                EventType = typeof(ProductCreated).AssemblyQualifiedName,
+                EventHandlerType = typeof(ProductCreatedEventHandler).AssemblyQualifiedName
+            });
 
             return subscriptionEngine;
         }

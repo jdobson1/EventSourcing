@@ -16,6 +16,8 @@ namespace Orders.Domain
         public Address ShippingAddress { get; private set; }
         public List<OrderItem> Items { get; private set; }
 
+        #region Constructors
+
         public Order(Guid shoppingCartId, string firstName, string lastName, Address billingAddress, Address shippingAddress, List<OrderItem> items) : base(Guid.NewGuid())
         {
             if (shoppingCartId == Guid.Empty)
@@ -38,10 +40,7 @@ namespace Orders.Domain
             Apply(events);
         }
 
-        protected override void Mutate(IEvent @event)
-        {
-            ((dynamic)this).When((dynamic)@event);
-        }
+        #endregion
 
         private void When(OrderSubmitted @event)
         {
@@ -50,6 +49,11 @@ namespace Orders.Domain
             BillingAddress = new Address(@event.BillingAddress);
             ShippingAddress = new Address(@event.ShippingAddress);
             Items = @event.Items.Select(i => new OrderItem(i)).ToList();
+        }
+
+        protected override void Mutate(IEvent @event)
+        {
+            ((dynamic)this).When((dynamic)@event);
         }
     }
 }

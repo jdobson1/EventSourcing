@@ -11,9 +11,10 @@ namespace Inventory.Domain
         public Guid ProductId { get; private set; }
         public int QuantityOnHand { get; private set; }
 
+        #region Constructors
+
         public ProductInventory(Guid productId) : base(productId)
         {
-            // apply event
             Apply(new ProductInventoryCreated(productId));
         }
 
@@ -22,14 +23,11 @@ namespace Inventory.Domain
             Apply(events);
         }
 
+        #endregion
+
         public void AdjustQuantityOnHand(int adjustment)
         {
             Apply(new ProductInventoryQohAdjusted(Id, ProductId, adjustment));
-        }
-
-        protected override void Mutate(IEvent @event)
-        {
-            ((dynamic)this).When((dynamic)@event);
         }
 
         private void When(ProductInventoryCreated @event)
@@ -40,6 +38,11 @@ namespace Inventory.Domain
         private void When(ProductInventoryQohAdjusted @event)
         {
             QuantityOnHand -= @event.Adjustment;
+        }
+
+        protected override void Mutate(IEvent @event)
+        {
+            ((dynamic)this).When((dynamic)@event);
         }
     }
 }

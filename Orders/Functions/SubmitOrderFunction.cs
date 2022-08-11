@@ -12,6 +12,8 @@ using Orders.Domain;
 using Projections;
 using System.Collections.Generic;
 using Orders.Projections.Views;
+using System.Linq;
+using System;
 
 namespace Orders.Functions
 {
@@ -35,15 +37,23 @@ namespace Orders.Functions
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             SubmitOrder command = JsonConvert.DeserializeObject<SubmitOrder>(requestBody);
 
-            var order = new Order(command.ShoppingCartId, command.FirstName, command.LastName, new Address(command.BillingAddress), new Address(command.ShippingAddress), await GetOrderItems());
+            var order = new Order(
+                command.ShoppingCartId, 
+                command.FirstName, 
+                command.LastName, 
+                new Address(command.BillingAddress), 
+                new Address(command.ShippingAddress), 
+                await GetOrderItems(command.ShoppingCartId));
+
             await _repository.Save(order);
 
             return new OkObjectResult("Order submitted successfully!");
         }
 
-        private async Task<List<OrderItem>> GetOrderItems()
+        private async Task<List<OrderItem>> GetOrderItems(Guid shoppingCartId)
         {
-            var shoppingCart = await _viewRepository.LoadViewAsync<ShoppingCartView>(nameof(ShoppingCartView));
+            var shoppingCartView = await _viewRepository.LoadViewAsync<ShoppingCartView>(nameof(ShoppingCartView));
+            var shoppingCart = shoppingCartView.ShoppingCarts.SingleOrDefault(x => x.ShoppingCartId == shoppingCartId);
 
             var orderItems = new List<OrderItem>();
             foreach (var shoppingCartItem in shoppingCart.Items)

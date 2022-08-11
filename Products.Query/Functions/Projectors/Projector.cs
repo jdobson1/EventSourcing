@@ -31,8 +31,6 @@ namespace Products.Query.Functions.Projectors
         {
             if (changes == null && changes.Count > 0) return;
 
-            //var actualChanges = new List<Change>();
-
             await _projectionEngine.HandleChangesAsync(changes.Select(c => JsonConvert.DeserializeObject<Change>(c.ToString())).ToList());
         }
     }

@@ -36,15 +36,7 @@ namespace Orders
                 var viewRepository = s.GetRequiredService<IViewRepository>();
                 return InitializeProjectionEngine(viewRepository);
             });
-            //builder.Services.AddSingleton((s) =>
-            //{
-            //    return InitializeSubscriptions();
-            //});
-
             // builder.Services.AddSingleton<ILoggerProvider, MyLoggerProvider>();
-
-            //todo: add database initializer to add collections for events and snapshots
-            //Task.Run(async () => await InitializeSubscriptions());
         }
 
         public Type GetEventType(string typeName)
@@ -54,19 +46,6 @@ namespace Orders
             return type ?? Type.GetType($"ShoppingCart.Common.Events.{typeName}, ShoppingCart.Common");
 
         }
-
-        //private ISubscriptionEngine InitializeSubscriptions()
-        //{
-        //    ISubscriptionEngine subscriptionEngine = new SubscriptionEngine(this, EndpointUrl, "products", AuthorizationKey, DatabaseId);
-        //    subscriptionEngine.Subscribe(
-        //        new Subscription 
-        //        { 
-        //            EventType = typeof(OrderSubmitted).AssemblyQualifiedName, 
-        //            EventHandlerType = typeof(CategoryCreatedEventHandler).AssemblyQualifiedName 
-        //        });
-
-        //    return subscriptionEngine;
-        //}
 
         private IProjectionEngine InitializeProjectionEngine(IViewRepository viewRepository)
         {

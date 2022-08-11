@@ -37,11 +37,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inventory", "Inventory\Inve
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ShoppingCart", "ShoppingCart", "{E833A53C-EC4E-431B-B510-BCEC6A7627D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingCart", "ShoppingCart\ShoppingCart.csproj", "{E699FFBB-B658-4E6F-ACC0-99E8A414FA4F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoppingCart", "ShoppingCart\ShoppingCart.csproj", "{E699FFBB-B658-4E6F-ACC0-99E8A414FA4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingCart.Common", "ShoppingCart.Common\ShoppingCart.Common.csproj", "{77DDA078-212D-481F-9406-613394890150}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoppingCart.Common", "ShoppingCart.Common\ShoppingCart.Common.csproj", "{77DDA078-212D-481F-9406-613394890150}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inventory.Common", "Inventory.Common\Inventory.Common.csproj", "{2A465062-F424-4DE6-865C-5F13E242A092}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inventory.Common", "Inventory.Common\Inventory.Common.csproj", "{2A465062-F424-4DE6-865C-5F13E242A092}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Diagrams", "Diagrams", "{46E11534-0727-4A0F-9641-C87E5B1406D5}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\..\Users\dobsonjt\OneDrive - Crowe LLP\Documents\Architecture\Diagrams\event-sourcing-change-feed-proc.png = ..\..\..\..\Users\dobsonjt\OneDrive - Crowe LLP\Documents\Architecture\Diagrams\event-sourcing-change-feed-proc.png
+		..\..\..\..\Users\dobsonjt\OneDrive - Crowe LLP\Documents\Architecture\Diagrams\event-sourcing-cqrs.PNG = ..\..\..\..\Users\dobsonjt\OneDrive - Crowe LLP\Documents\Architecture\Diagrams\event-sourcing-cqrs.PNG
+		..\..\..\..\Users\dobsonjt\OneDrive - Crowe LLP\Documents\Architecture\Diagrams\event-sourcing-demo.PNG = ..\..\..\..\Users\dobsonjt\OneDrive - Crowe LLP\Documents\Architecture\Diagrams\event-sourcing-demo.PNG
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
