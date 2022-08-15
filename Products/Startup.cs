@@ -12,9 +12,9 @@ namespace Products
 {
     public class Startup : FunctionsStartup, IEventTypeResolver
     {
-        private static string EndpointUrl = Environment.GetEnvironmentVariable("CosmosEndpointUrl"); //"https://cosmos-es.documents.azure.com:443/";
-        private static readonly string AuthorizationKey = Environment.GetEnvironmentVariable("CosmosAuthorizationKey"); //"Pq3WO6OdB6yaryG6AdQgGleV0q210Eu60coHoyvJMhTH0abvE5EgEmywagoGv41rOLbcnpRSQHtRHowmwPQdhA==";
-        private static string DatabaseId = Environment.GetEnvironmentVariable("CosmosEventStoreDatabaseId"); //"event-store";
+        private static string EndpointUrl = Environment.GetEnvironmentVariable("CosmosEndpointUrl");
+        private static readonly string AuthorizationKey = Environment.GetEnvironmentVariable("CosmosAuthorizationKey");
+        private static string DatabaseId = Environment.GetEnvironmentVariable("CosmosEventStoreDatabaseId");
 
         public override void Configure(IFunctionsHostBuilder builder)
         {
