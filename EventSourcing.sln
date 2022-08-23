@@ -50,6 +50,200 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Diagrams", "Diagrams", "{46
 		..\..\..\..\Users\dobsonjt\OneDrive - Crowe LLP\Documents\Architecture\Diagrams\event-sourcing-demo.PNG = ..\..\..\..\Users\dobsonjt\OneDrive - Crowe LLP\Documents\Architecture\Diagrams\event-sourcing-demo.PNG
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{87644020-F5DE-4716-8544-A75F45C6D4D4}"
+	ProjectSection(SolutionItems) = preProject
+		Web\.gitignore = Web\.gitignore
+		Web\angular.json = Web\angular.json
+		Web\package-lock.json = Web\package-lock.json
+		Web\package.json = Web\package.json
+		Web\README.md = Web\README.md
+		Web\tailwind.config.js = Web\tailwind.config.js
+		Web\tsconfig.json = Web\tsconfig.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".angular", ".angular", "{1B0EE77D-F94D-48A3-BC4D-A41625C46B2C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "projects", "projects", "{84B90858-DBC7-4B3F-8FFA-7717B8BD269D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{6FAED3FE-A05A-4F07-9446-9DF803204564}"
+	ProjectSection(SolutionItems) = preProject
+		Web\projects\shared\.browserslistrc = Web\projects\shared\.browserslistrc
+		Web\projects\shared\karma.conf.js = Web\projects\shared\karma.conf.js
+		Web\projects\shared\ng-package.json = Web\projects\shared\ng-package.json
+		Web\projects\shared\package.json = Web\projects\shared\package.json
+		Web\projects\shared\README.md = Web\projects\shared\README.md
+		Web\projects\shared\tsconfig.lib.json = Web\projects\shared\tsconfig.lib.json
+		Web\projects\shared\tsconfig.lib.prod.json = Web\projects\shared\tsconfig.lib.prod.json
+		Web\projects\shared\tsconfig.spec.json = Web\projects\shared\tsconfig.spec.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shell", "shell", "{C60D4DE3-85E1-47A9-BD9D-62D91B8A2599}"
+	ProjectSection(SolutionItems) = preProject
+		Web\projects\shell\.browserslistrc = Web\projects\shell\.browserslistrc
+		Web\projects\shell\karma.conf.js = Web\projects\shell\karma.conf.js
+		Web\projects\shell\tsconfig.app.json = Web\projects\shell\tsconfig.app.json
+		Web\projects\shell\tsconfig.spec.json = Web\projects\shell\tsconfig.spec.json
+		Web\projects\shell\webpack.config.js = Web\projects\shell\webpack.config.js
+		Web\projects\shell\webpack.prod.config.js = Web\projects\shell\webpack.prod.config.js
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{85FA60C9-679D-4429-8301-901DF0D54BEA}"
+	ProjectSection(SolutionItems) = preProject
+		Web\projects\shared\src\public-api.ts = Web\projects\shared\src\public-api.ts
+		Web\projects\shared\src\test.ts = Web\projects\shared\src\test.ts
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{77C58E30-9FF2-403D-B91B-BB295F779F96}"
+	ProjectSection(SolutionItems) = preProject
+		Web\projects\shared\src\lib\basket.service.ts = Web\projects\shared\src\lib\basket.service.ts
+		Web\projects\shared\src\lib\product.ts = Web\projects\shared\src\lib\product.ts
+		Web\projects\shared\src\lib\products.service.ts = Web\projects\shared\src\lib\products.service.ts
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{350E1AF6-7F54-4C18-A1C7-DC6FF0AF9D09}"
+	ProjectSection(SolutionItems) = preProject
+		Web\projects\shell\src\bootstrap.ts = Web\projects\shell\src\bootstrap.ts
+		Web\projects\shell\src\decl.d.ts = Web\projects\shell\src\decl.d.ts
+		Web\projects\shell\src\favicon.ico = Web\projects\shell\src\favicon.ico
+		Web\projects\shell\src\index.html = Web\projects\shell\src\index.html
+		Web\projects\shell\src\main.ts = Web\projects\shell\src\main.ts
+		Web\projects\shell\src\polyfills.ts = Web\projects\shell\src\polyfills.ts
+		Web\projects\shell\src\styles.css = Web\projects\shell\src\styles.css
+		Web\projects\shell\src\test.ts = Web\projects\shell\src\test.ts
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "app", "app", "{40CE5AC5-8953-4388-9FF9-B2458B3A98ED}"
+	ProjectSection(SolutionItems) = preProject
+		Web\projects\shell\src\app\app-routing.module.ts = Web\projects\shell\src\app\app-routing.module.ts
+		Web\projects\shell\src\app\app.component.html = Web\projects\shell\src\app\app.component.html
+		Web\projects\shell\src\app\app.component.ts = Web\projects\shell\src\app\app.component.ts
+		Web\projects\shell\src\app\app.module.ts = Web\projects\shell\src\app\app.module.ts
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{74D85777-3232-45F6-A2EE-D7F188E99CB0}"
+	ProjectSection(SolutionItems) = preProject
+		Web\projects\shell\src\assets\.gitkeep = Web\projects\shell\src\assets\.gitkeep
+		Web\projects\shell\src\assets\cupcake.svg = Web\projects\shell\src\assets\cupcake.svg
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "environments", "environments", "{0E043FED-655D-456E-BCDE-CAFF5032FB43}"
+	ProjectSection(SolutionItems) = preProject
+		Web\projects\shell\src\environments\environment.prod.ts = Web\projects\shell\src\environments\environment.prod.ts
+		Web\projects\shell\src\environments\environment.ts = Web\projects\shell\src\environments\environment.ts
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "products", "products", "{4F7BEFB0-B5DF-4544-A687-3D948BE063EC}"
+	ProjectSection(SolutionItems) = preProject
+		Web\projects\shell\src\app\products\product.component.html = Web\projects\shell\src\app\products\product.component.html
+		Web\projects\shell\src\app\products\product.component.ts = Web\projects\shell\src\app\products\product.component.ts
+		Web\projects\shell\src\app\products\products.component.html = Web\projects\shell\src\app\products\products.component.html
+		Web\projects\shell\src\app\products\products.component.ts = Web\projects\shell\src\app\products\products.component.ts
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "mfe-basket", "mfe-basket", "{DC47297A-CDBE-4FF0-A1EA-46EDE52A108E}"
+	ProjectSection(SolutionItems) = preProject
+		Web\projects\mfe-basket\.browserslistrc = Web\projects\mfe-basket\.browserslistrc
+		Web\projects\mfe-basket\karma.conf.js = Web\projects\mfe-basket\karma.conf.js
+		Web\projects\mfe-basket\tsconfig.app.json = Web\projects\mfe-basket\tsconfig.app.json
+		Web\projects\mfe-basket\tsconfig.spec.json = Web\projects\mfe-basket\tsconfig.spec.json
+		Web\projects\mfe-basket\webpack.config.js = Web\projects\mfe-basket\webpack.config.js
+		Web\projects\mfe-basket\webpack.prod.config.js = Web\projects\mfe-basket\webpack.prod.config.js
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4350427E-2E78-4D2A-AAF2-0BABBBB806CE}"
+	ProjectSection(SolutionItems) = preProject
+		Web\projects\mfe-basket\src\bootstrap.ts = Web\projects\mfe-basket\src\bootstrap.ts
+		Web\projects\mfe-basket\src\favicon.ico = Web\projects\mfe-basket\src\favicon.ico
+		Web\projects\mfe-basket\src\index.html = Web\projects\mfe-basket\src\index.html
+		Web\projects\mfe-basket\src\main.ts = Web\projects\mfe-basket\src\main.ts
+		Web\projects\mfe-basket\src\polyfills.ts = Web\projects\mfe-basket\src\polyfills.ts
+		Web\projects\mfe-basket\src\styles.css = Web\projects\mfe-basket\src\styles.css
+		Web\projects\mfe-basket\src\test.ts = Web\projects\mfe-basket\src\test.ts
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "app", "app", "{D4696B6E-0927-4C0D-88D8-456F51A4FA55}"
+	ProjectSection(SolutionItems) = preProject
+		Web\projects\mfe-basket\src\app\app-routing.module.ts = Web\projects\mfe-basket\src\app\app-routing.module.ts
+		Web\projects\mfe-basket\src\app\app.component.html = Web\projects\mfe-basket\src\app\app.component.html
+		Web\projects\mfe-basket\src\app\app.component.ts = Web\projects\mfe-basket\src\app\app.component.ts
+		Web\projects\mfe-basket\src\app\app.module.ts = Web\projects\mfe-basket\src\app\app.module.ts
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{33E52D44-954E-4B4D-A60B-9484D572EEF8}"
+	ProjectSection(SolutionItems) = preProject
+		Web\projects\mfe-basket\src\assets\.gitkeep = Web\projects\mfe-basket\src\assets\.gitkeep
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "environments", "environments", "{A929171E-1F88-431B-A944-9EF6691E0A4B}"
+	ProjectSection(SolutionItems) = preProject
+		Web\projects\mfe-basket\src\environments\environment.prod.ts = Web\projects\mfe-basket\src\environments\environment.prod.ts
+		Web\projects\mfe-basket\src\environments\environment.ts = Web\projects\mfe-basket\src\environments\environment.ts
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "home", "home", "{58F29188-1297-4335-8128-2B99BE2D88A1}"
+	ProjectSection(SolutionItems) = preProject
+		Web\projects\mfe-basket\src\app\home\home.component.html = Web\projects\mfe-basket\src\app\home\home.component.html
+		Web\projects\mfe-basket\src\app\home\home.component.ts = Web\projects\mfe-basket\src\app\home\home.component.ts
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "basket", "basket", "{2882D67C-1E4A-4C81-9063-F3D69A9184D0}"
+	ProjectSection(SolutionItems) = preProject
+		Web\projects\mfe-basket\src\app\basket\basket-routing.module.ts = Web\projects\mfe-basket\src\app\basket\basket-routing.module.ts
+		Web\projects\mfe-basket\src\app\basket\basket.component.html = Web\projects\mfe-basket\src\app\basket\basket.component.html
+		Web\projects\mfe-basket\src\app\basket\basket.component.ts = Web\projects\mfe-basket\src\app\basket\basket.component.ts
+		Web\projects\mfe-basket\src\app\basket\basket.module.ts = Web\projects\mfe-basket\src\app\basket\basket.module.ts
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "mfe-profile", "mfe-profile", "{86B70671-A16B-4BBD-9D2F-FC49F0529208}"
+	ProjectSection(SolutionItems) = preProject
+		Web\projects\mfe-profile\.browserslistrc = Web\projects\mfe-profile\.browserslistrc
+		Web\projects\mfe-profile\karma.conf.js = Web\projects\mfe-profile\karma.conf.js
+		Web\projects\mfe-profile\tsconfig.app.json = Web\projects\mfe-profile\tsconfig.app.json
+		Web\projects\mfe-profile\tsconfig.spec.json = Web\projects\mfe-profile\tsconfig.spec.json
+		Web\projects\mfe-profile\webpack.config.js = Web\projects\mfe-profile\webpack.config.js
+		Web\projects\mfe-profile\webpack.prod.config.js = Web\projects\mfe-profile\webpack.prod.config.js
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{7A408B90-A1EF-49C5-B96A-9CD114CE8F9A}"
+	ProjectSection(SolutionItems) = preProject
+		Web\projects\mfe-profile\src\bootstrap.ts = Web\projects\mfe-profile\src\bootstrap.ts
+		Web\projects\mfe-profile\src\favicon.ico = Web\projects\mfe-profile\src\favicon.ico
+		Web\projects\mfe-profile\src\index.html = Web\projects\mfe-profile\src\index.html
+		Web\projects\mfe-profile\src\main.ts = Web\projects\mfe-profile\src\main.ts
+		Web\projects\mfe-profile\src\polyfills.ts = Web\projects\mfe-profile\src\polyfills.ts
+		Web\projects\mfe-profile\src\styles.css = Web\projects\mfe-profile\src\styles.css
+		Web\projects\mfe-profile\src\test.ts = Web\projects\mfe-profile\src\test.ts
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "environments", "environments", "{12586E8F-2DA9-437D-A193-B2A1880D1543}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "app", "app", "{59C0BA55-6CC3-43B3-8699-61C0E683280B}"
+	ProjectSection(SolutionItems) = preProject
+		Web\projects\mfe-profile\src\app\app-routing.module.ts = Web\projects\mfe-profile\src\app\app-routing.module.ts
+		Web\projects\mfe-profile\src\app\app.component.html = Web\projects\mfe-profile\src\app\app.component.html
+		Web\projects\mfe-profile\src\app\app.component.ts = Web\projects\mfe-profile\src\app\app.component.ts
+		Web\projects\mfe-profile\src\app\app.module.ts = Web\projects\mfe-profile\src\app\app.module.ts
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{20B435B6-1158-4582-8BAF-AEE9839FD91C}"
+	ProjectSection(SolutionItems) = preProject
+		Web\projects\mfe-profile\src\assets\.gitkeep = Web\projects\mfe-profile\src\assets\.gitkeep
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "home", "home", "{274A5F7F-14BC-4254-9326-D650E6364D89}"
+	ProjectSection(SolutionItems) = preProject
+		Web\projects\mfe-profile\src\app\home\home.component.html = Web\projects\mfe-profile\src\app\home\home.component.html
+		Web\projects\mfe-profile\src\app\home\home.component.ts = Web\projects\mfe-profile\src\app\home\home.component.ts
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "profile", "profile", "{2A652477-D557-4EDF-9286-38FAE2B5A0FB}"
+	ProjectSection(SolutionItems) = preProject
+		Web\projects\mfe-profile\src\app\profile\profile-routing.module.ts = Web\projects\mfe-profile\src\app\profile\profile-routing.module.ts
+		Web\projects\mfe-profile\src\app\profile\profile.component.html = Web\projects\mfe-profile\src\app\profile\profile.component.html
+		Web\projects\mfe-profile\src\app\profile\profile.component.ts = Web\projects\mfe-profile\src\app\profile\profile.component.ts
+		Web\projects\mfe-profile\src\app\profile\profile.module.ts = Web\projects\mfe-profile\src\app\profile\profile.module.ts
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -134,6 +328,31 @@ Global
 		{E699FFBB-B658-4E6F-ACC0-99E8A414FA4F} = {E833A53C-EC4E-431B-B510-BCEC6A7627D8}
 		{77DDA078-212D-481F-9406-613394890150} = {E833A53C-EC4E-431B-B510-BCEC6A7627D8}
 		{2A465062-F424-4DE6-865C-5F13E242A092} = {5896DB5E-F55E-48AE-8C98-9B82CC3EEFDC}
+		{1B0EE77D-F94D-48A3-BC4D-A41625C46B2C} = {87644020-F5DE-4716-8544-A75F45C6D4D4}
+		{84B90858-DBC7-4B3F-8FFA-7717B8BD269D} = {87644020-F5DE-4716-8544-A75F45C6D4D4}
+		{6FAED3FE-A05A-4F07-9446-9DF803204564} = {84B90858-DBC7-4B3F-8FFA-7717B8BD269D}
+		{C60D4DE3-85E1-47A9-BD9D-62D91B8A2599} = {84B90858-DBC7-4B3F-8FFA-7717B8BD269D}
+		{85FA60C9-679D-4429-8301-901DF0D54BEA} = {6FAED3FE-A05A-4F07-9446-9DF803204564}
+		{77C58E30-9FF2-403D-B91B-BB295F779F96} = {85FA60C9-679D-4429-8301-901DF0D54BEA}
+		{350E1AF6-7F54-4C18-A1C7-DC6FF0AF9D09} = {C60D4DE3-85E1-47A9-BD9D-62D91B8A2599}
+		{40CE5AC5-8953-4388-9FF9-B2458B3A98ED} = {350E1AF6-7F54-4C18-A1C7-DC6FF0AF9D09}
+		{74D85777-3232-45F6-A2EE-D7F188E99CB0} = {350E1AF6-7F54-4C18-A1C7-DC6FF0AF9D09}
+		{0E043FED-655D-456E-BCDE-CAFF5032FB43} = {350E1AF6-7F54-4C18-A1C7-DC6FF0AF9D09}
+		{4F7BEFB0-B5DF-4544-A687-3D948BE063EC} = {40CE5AC5-8953-4388-9FF9-B2458B3A98ED}
+		{DC47297A-CDBE-4FF0-A1EA-46EDE52A108E} = {84B90858-DBC7-4B3F-8FFA-7717B8BD269D}
+		{4350427E-2E78-4D2A-AAF2-0BABBBB806CE} = {DC47297A-CDBE-4FF0-A1EA-46EDE52A108E}
+		{D4696B6E-0927-4C0D-88D8-456F51A4FA55} = {4350427E-2E78-4D2A-AAF2-0BABBBB806CE}
+		{33E52D44-954E-4B4D-A60B-9484D572EEF8} = {4350427E-2E78-4D2A-AAF2-0BABBBB806CE}
+		{A929171E-1F88-431B-A944-9EF6691E0A4B} = {4350427E-2E78-4D2A-AAF2-0BABBBB806CE}
+		{58F29188-1297-4335-8128-2B99BE2D88A1} = {D4696B6E-0927-4C0D-88D8-456F51A4FA55}
+		{2882D67C-1E4A-4C81-9063-F3D69A9184D0} = {D4696B6E-0927-4C0D-88D8-456F51A4FA55}
+		{86B70671-A16B-4BBD-9D2F-FC49F0529208} = {84B90858-DBC7-4B3F-8FFA-7717B8BD269D}
+		{7A408B90-A1EF-49C5-B96A-9CD114CE8F9A} = {86B70671-A16B-4BBD-9D2F-FC49F0529208}
+		{12586E8F-2DA9-437D-A193-B2A1880D1543} = {7A408B90-A1EF-49C5-B96A-9CD114CE8F9A}
+		{59C0BA55-6CC3-43B3-8699-61C0E683280B} = {7A408B90-A1EF-49C5-B96A-9CD114CE8F9A}
+		{20B435B6-1158-4582-8BAF-AEE9839FD91C} = {7A408B90-A1EF-49C5-B96A-9CD114CE8F9A}
+		{274A5F7F-14BC-4254-9326-D650E6364D89} = {59C0BA55-6CC3-43B3-8699-61C0E683280B}
+		{2A652477-D557-4EDF-9286-38FAE2B5A0FB} = {59C0BA55-6CC3-43B3-8699-61C0E683280B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2E9A127E-1433-4378-9B7A-B7CFDECE56BA}

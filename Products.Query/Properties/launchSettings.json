@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "Products.Query": {
+      "commandName": "Project"
+    }
+  }
+}

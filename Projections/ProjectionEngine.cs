@@ -1,5 +1,6 @@
 ﻿using Core;
 using EventStore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +12,8 @@ namespace Projections
         private readonly List<IProjection> _projections = new List<IProjection>();
         private readonly IEventTypeResolver _eventTypeResolver;
         private readonly IViewRepository _viewRepository;
+
+        public event EventHandler<ChangesHandledEventArgs> OnChangesHandled;
 
         public ProjectionEngine(IEventTypeResolver eventTypeResolver, IViewRepository viewRepository)
         {
@@ -24,6 +27,8 @@ namespace Projections
 
         public async Task HandleChangesAsync(IReadOnlyCollection<Change> changes)
         {
+            //var updatedViews = new List<UpdatedView>();
+
             foreach (var change in changes)
             {
                 var @event = change.GetEvent(_eventTypeResolver);
@@ -42,11 +47,6 @@ namespace Projections
                     {
                         var view = await _viewRepository.LoadViewAsync(viewName);
 
-                        // Only update if the LSN of the change is higher than the view. This will ensure
-                        // that changes are only processed once.
-                        // NOTE: This only works if there's just a single physical partition in Cosmos DB.
-                        // TODO: To support multiple partitions we need access to the leases to store
-                        // a LSN per lease in the view. This is not yet possible in the V3 SDK.
                         if (view.IsNewerThanCheckpoint(change))
                         {
                             projection.Apply(@event, view);
@@ -54,6 +54,9 @@ namespace Projections
                             view.UpdateCheckpoint(change);
 
                             handled = await _viewRepository.SaveViewAsync(viewName, view);
+
+                            //updatedViews.Add(new UpdatedView { Name = viewName, Payload = view.Payload });
+                            OnChangesHandled?.Invoke(this, new ChangesHandledEventArgs { View = new UpdatedView { Name = viewName, Payload = view.Payload } });
                         }
                         else
                         {

@@ -29,13 +29,13 @@ Console.Write(responseBody);
 
 var products = JsonConvert.DeserializeObject<List<ProductDto>>(responseBody);
 
-Console.Write($"{Environment.NewLine}Press any key to add item to cart...");
-Console.ReadKey(true);
+//Console.Write($"{Environment.NewLine}Press any key to add item to cart...");
+//Console.ReadKey(true);
 
-var addItemToCart = new { productId = products.First().Id, cartId = Guid.NewGuid(), quantity = 3 };
-content = new StringContent(JsonConvert.SerializeObject(addItemToCart), Encoding.UTF8, "application/json");
-await httpClient.PostAsync("http://localhost:7072/api/AddItemToCart", content);
+//var addItemToCart = new { productId = products.First().Id, cartId = Guid.NewGuid(), quantity = 3 };
+//content = new StringContent(JsonConvert.SerializeObject(addItemToCart), Encoding.UTF8, "application/json");
+//await httpClient.PostAsync("http://localhost:7072/api/AddItemToCart", content);
 
-Console.Write($"{Environment.NewLine}Press any key to exit...");
-Console.ReadKey(true);
+//Console.Write($"{Environment.NewLine}Press any key to exit...");
+//Console.ReadKey(true);
 

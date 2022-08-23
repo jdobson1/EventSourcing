@@ -1,0 +1,75 @@
+<header class="p-4 mx-4 flex flex-row justify-between items-center">
+  <div class="flex flex-row items-center">
+    <img class="w-14" src="assets/cupcake.svg" alt="cupcake">
+    <h1 class="text-4xl ml-3 text-cyan-500"><a routerLink="/">Happy Cupcake</a></h1>
+  </div>
+  <div class="text-l inline-flex justify-end items-center text-slate-700">
+    <span class="mr-4" *ngIf="name$ | async as name; else greeting">Welcome back {{name}}</span>
+    <ng-template #greeting>
+      <span class="mr-4">Hello cupcake fan!</span>
+    </ng-template>
+
+    <nav>
+      <ul class="inline-flex gap-3 items-center">
+        <li>
+          <a routerLink="/">
+            <button
+                    class="flex items-center transition ease-in delay-150 duration-300 h-10 px-4 rounded-lg hover:border hover:border-sky-400"
+                    routerLinkActive="text-cyan-500 font-semibold"
+                    [routerLinkActiveOptions]="{exact: true}"
+            >
+              <span class="material-icons-outlined text-gray-500">storefront</span>
+              <span>&nbsp;Cupcakes</span>
+            </button>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/basket">
+            <button
+                    class="flex items-center transition ease-in delay-150 duration-300 h-10 px-4 rounded-lg hover:border hover:border-sky-400"
+                    routerLinkActive="text-cyan-500 font-semibold"
+            >
+              <span class="material-icons-outlined text-gray-500">shopping_basket</span>
+              <span>&nbsp;Basket</span>
+            </button>
+          </a>
+        </li>
+        <li *ngIf="isAuthenticated$ | async">
+          <a routerLink="/profile">
+            <button
+                    class="flex items-center transition ease-in delay-150 duration-300 h-10 px-4 rounded-lg hover:border hover:border-sky-400"
+                    routerLinkActive="text-cyan-500 font-semibold"
+            >
+              <span class="material-icons-outlined text-gray-500">account_circle</span>
+              <span>&nbsp;Profile</span>
+            </button>
+          </a>
+        </li>
+        <li>
+          <button *ngIf="(isAuthenticated$ | async) === false; else logout"
+            class="flex items-center transition ease-in delay-150 duration-300 h-10 px-4 rounded-lg hover:border hover:border-sky-400"
+            (click)="signIn()"
+          >
+            <span class="material-icons-outlined text-gray-500">login</span>
+            <span>&nbsp;Sign In</span>
+          </button>
+        
+            <ng-template #logout>
+              <button 
+                class="flex items-center transition ease-in delay-150 duration-300 h-10 px-4 rounded-lg hover:border hover:border-sky-400"
+                (click)="signOut()"
+              >
+                <span class="material-icons-outlined text-gray-500">logout</span>
+                <span>&nbsp;Sign Out</span>
+              </button>
+          </ng-template>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="mt-6">
+  <router-outlet></router-outlet>
+</div>
+

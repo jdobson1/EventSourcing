@@ -36,7 +36,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "name": "[concat(parameters('resourceGroupName'), 'Deployment', uniqueString(concat('cosmos-es', subscription().subscriptionId)))]",
+      "name": "[concat(parameters('resourceGroupName'), 'Deployment', uniqueString(concat('cosmosesb4e1', subscription().subscriptionId)))]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "apiVersion": "2019-10-01",
       "dependsOn": [
@@ -49,17 +49,15 @@
           "contentVersion": "1.0.0.0",
           "resources": [
             {
-              "name": "cosmos-es",
+              "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+              },
+              "kind": "Storage",
+              "name": "cosmosesb4e1",
+              "type": "Microsoft.Storage/storageAccounts",
               "location": "[parameters('resourceLocation')]",
-              "type": "Microsoft.DocumentDB/databaseAccounts",
-              "kind": "GlobalDocumentDB",
-              "systemData": {
-                "createdAt": "2022-07-25T19:56:11.523036Z"
-              },
-              "properties": {
-                "databaseAccountOfferType": "Standard"
-              },
-              "apiVersion": "2015-04-08"
+              "apiVersion": "2017-10-01"
             }
           ]
         }
@@ -67,6 +65,6 @@
     }
   ],
   "metadata": {
-    "_dependencyType": "cosmosdb.azure"
+    "_dependencyType": "storage.azure"
   }
 }

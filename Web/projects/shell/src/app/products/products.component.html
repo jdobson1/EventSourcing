@@ -1,0 +1,11 @@
+<p class="text-center text-3xl mb-7 text-pink-500">Which sweet treat will you enjoy today?</p>
+<div class="bg-gray-200 p-4 border rounded py-2 px-3">
+    <form class="flex items-center space-x-6 my-8" #productForm="ngForm" (ngSubmit)="createProduct(productForm.value)">
+        <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Name</label>
+        <input type="text" id="productName" class="shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="productName" ngModel #productName="ngModel">
+        <input type="submit" value="Add Product" class="transition ease-in-out delay-150 duration-300 hover:-translate-y-1 hover:scale-110 h-10 bg-blue-500 hover:bg-blue-700 text-white py-2 px-6 font-semibold rounded-lg focus:outline-none focus:shadow-outline">
+    </form>
+</div>
+<div class="flex flex-wrap gap-4 my-8">
+    <app-product *ngFor="let p of products" [product]="p" (purchase)="addToBasket($event)"></app-product>
+</div>
