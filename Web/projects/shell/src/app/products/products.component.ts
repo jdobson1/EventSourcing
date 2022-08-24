@@ -46,7 +46,7 @@ export class ProductsComponent implements OnInit {
         .configureLogging(signalR.LogLevel.Information)
           .build();
       
-      connection.on('ProductsView', (productsView: ProductsView) => {
+    connection.on('ProductsView', (productsView: ProductsView) => {
           this.products = [];
           productsView.Products.forEach( (dto: ProductDto) => {
               this.products.push({ id: dto.Id, name: dto.Name, link: '', description: '' });
