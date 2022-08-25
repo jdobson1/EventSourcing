@@ -34,8 +34,8 @@ namespace Orders.Functions
         {
             log.LogInformation("Submitting order...");
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            SubmitOrder command = JsonConvert.DeserializeObject<SubmitOrder>(requestBody);
+            var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            var command = JsonConvert.DeserializeObject<SubmitOrder>(requestBody);
 
             var order = new Order(
                 command.ShoppingCartId, 
@@ -56,10 +56,9 @@ namespace Orders.Functions
             var shoppingCart = shoppingCartView.ShoppingCarts.SingleOrDefault(x => x.ShoppingCartId == shoppingCartId);
 
             var orderItems = new List<OrderItem>();
-            foreach (var shoppingCartItem in shoppingCart.Items)
-            {
-                orderItems.Add(new OrderItem(shoppingCartItem.ProductId, shoppingCartItem.Quantity));
-            }
+            if (shoppingCart?.Items == null) return orderItems;
+
+            orderItems.AddRange(shoppingCart.Items.Select(shoppingCartItem => new OrderItem(shoppingCartItem.ProductId, shoppingCartItem.Quantity)));
 
             return orderItems;
         }

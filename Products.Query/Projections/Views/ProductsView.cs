@@ -1,6 +1,5 @@
 ﻿
 using Products.Common.Dtos;
-using System;
 using System.Collections.Generic;
 
 namespace Products.Query.Projections.Views

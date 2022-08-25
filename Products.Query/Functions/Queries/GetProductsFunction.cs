@@ -28,8 +28,8 @@ namespace Products.Query.Functions.Queries
         {
             log.LogInformation("Retrieving products...");
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            GetProducts getProductsQuery = JsonConvert.DeserializeObject<GetProducts>(requestBody);
+            var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            var getProductsQuery = JsonConvert.DeserializeObject<GetProducts>(requestBody);
 
             var productsView = await _viewRepository.LoadViewAsync(nameof(ProductsView));
             var productView = JsonConvert.DeserializeObject<ProductsView>(productsView.Payload.ToString());

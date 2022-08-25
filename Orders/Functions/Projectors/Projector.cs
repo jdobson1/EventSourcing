@@ -29,7 +29,7 @@ namespace Orders.Functions.Projectors
             LeaseCollectionName = "leases")]IReadOnlyList<Document> changes,
             ILogger log)
         {
-            if (changes == null && changes.Count > 0) return;
+            if (changes == null || !changes.Any()) return;
 
             await _projectionEngine.HandleChangesAsync(changes.Select(c => JsonConvert.DeserializeObject<Change>(c.ToString())).ToList());
         }

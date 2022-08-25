@@ -33,7 +33,7 @@ namespace Products.Query.Functions.Projectors
             ILogger log,
             [SignalR(HubName = "productqueryviews")] IAsyncCollector<SignalRMessage> signalRMessages)
         {
-            if (changes == null && changes.Count > 0) return;
+            if (changes == null || !changes.Any()) return;
 
             _signalRMessages = signalRMessages;
             _projectionEngine.OnChangesHandled += OnChangesHandled;
@@ -43,7 +43,7 @@ namespace Products.Query.Functions.Projectors
 
         private void OnChangesHandled(object sender, ChangesHandledEventArgs e)
         {
-            _signalRMessages.AddAsync(new SignalRMessage { Target = e.View.Name, Arguments = new[] { e.View.Payload }});
+            _signalRMessages.AddAsync(new SignalRMessage { Target = e.View.Name, Arguments = new object[] { e.View.Payload }});
         }
     }
 }

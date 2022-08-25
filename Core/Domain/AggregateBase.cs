@@ -5,7 +5,7 @@ namespace Core.Domain
 {
     public abstract class AggregateBase : IAggregate
     {
-        private List<IEvent> _events = new List<IEvent>();
+        private readonly List<IEvent> _events = new();
         public ReadOnlyCollection<IEvent> Events => _events.AsReadOnly();
         public Guid Id { get; protected set; }
         public int Version { get; private set; }

@@ -12,14 +12,8 @@ namespace Products.Domain
 
         public string Name
         {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                Apply(new ProductNameChanged(Id, value));
-            }
+            get => _name;
+            set => Apply(new ProductNameChanged(Id, value));
         }
 
         #region Constructors

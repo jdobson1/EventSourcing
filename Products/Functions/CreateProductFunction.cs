@@ -27,8 +27,8 @@ namespace Products.Functions
         {
             log.LogInformation("Creating product...");
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            CreateProduct command = JsonConvert.DeserializeObject<CreateProduct>(requestBody);
+            var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            var command = JsonConvert.DeserializeObject<CreateProduct>(requestBody);
 
             var product = new Product(command.Id, command.Name);
             await _repository.Save(product);

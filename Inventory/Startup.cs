@@ -17,23 +17,16 @@ namespace Inventory
 {
     public class Startup : FunctionsStartup, IEventTypeResolver
     {
-        private static string EndpointUrl = Environment.GetEnvironmentVariable("CosmosEndpointUrl");
+        private static readonly string EndpointUrl = Environment.GetEnvironmentVariable("CosmosEndpointUrl");
         private static readonly string AuthorizationKey = Environment.GetEnvironmentVariable("CosmosAuthorizationKey");
-        private static string DatabaseId = Environment.GetEnvironmentVariable("CosmosEventStoreDatabaseId");
+        private static readonly string DatabaseId = Environment.GetEnvironmentVariable("CosmosEventStoreDatabaseId");
 
         public override void Configure(IFunctionsHostBuilder builder)
         {
             builder.Services.AddTransient<IRepository<ProductInventory>, ProductInventoryRepository>();
-            builder.Services.AddSingleton<IEventStore>((s) =>
-            {
-                return new CosmosEventStore(this, EndpointUrl, AuthorizationKey, DatabaseId);
-            });
-            builder.Services.AddSingleton((s) =>
-            {
-                return InitializeSubscriptions();
-            });
+            builder.Services.AddSingleton<IEventStore>((s) => new CosmosEventStore(this, EndpointUrl, AuthorizationKey, DatabaseId));
+            builder.Services.AddSingleton((s) => InitializeSubscriptions());
            
-
             // builder.Services.AddSingleton<ILoggerProvider, MyLoggerProvider>();
         }
 

@@ -27,8 +27,8 @@ namespace Products.Functions
         {
             log.LogInformation("Changing product name...");
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            ChangeProductName command = JsonConvert.DeserializeObject<ChangeProductName>(requestBody);
+            var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            var command = JsonConvert.DeserializeObject<ChangeProductName>(requestBody);
 
             var product = await _repository.GetById(command.ProductId);
             product.Name = command.ProductName;

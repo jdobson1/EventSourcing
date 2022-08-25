@@ -49,6 +49,8 @@ namespace Orders.Domain
             BillingAddress = new Address(@event.BillingAddress);
             ShippingAddress = new Address(@event.ShippingAddress);
             Items = @event.Items.Select(i => new OrderItem(i)).ToList();
+            FirstName = @event.FirstName;
+            LastName = @event.LastName;
         }
 
         protected override void Mutate(IEvent @event)

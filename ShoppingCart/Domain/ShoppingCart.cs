@@ -8,7 +8,7 @@ namespace ShoppingCart.Domain
 {
     public class ShoppingCart : AggregateBase
     {
-        private List<ShoppingCartItem> _items;
+        private readonly List<ShoppingCartItem> _items = new();
         public IReadOnlyList<ShoppingCartItem> Items => _items;
 
         #region Constructors

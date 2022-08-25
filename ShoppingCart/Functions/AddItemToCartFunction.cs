@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -28,8 +27,8 @@ namespace ShoppingCart.Functions
         {
             log.LogInformation("Adding item to cart...");
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            AddItemToCart command = JsonConvert.DeserializeObject<AddItemToCart>(requestBody);
+            var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            var command = JsonConvert.DeserializeObject<AddItemToCart>(requestBody);
 
             var shoppingCart = new Domain.ShoppingCart(command.CartId);
             shoppingCart.AddItem(command.ProductId, command.Quantity);
