@@ -27,8 +27,6 @@ namespace Projections
 
         public async Task HandleChangesAsync(IReadOnlyCollection<Change> changes)
         {
-            //var updatedViews = new List<UpdatedView>();
-
             foreach (var change in changes)
             {
                 var @event = change.GetEvent(_eventTypeResolver);
@@ -54,8 +52,7 @@ namespace Projections
                             view.UpdateCheckpoint(change);
 
                             handled = await _viewRepository.SaveViewAsync(viewName, view);
-
-                            //updatedViews.Add(new UpdatedView { Name = viewName, Payload = view.Payload });
+                            
                             OnChangesHandled?.Invoke(this, new ChangesHandledEventArgs { View = new UpdatedView { Name = viewName, Payload = view.Payload } });
                         }
                         else

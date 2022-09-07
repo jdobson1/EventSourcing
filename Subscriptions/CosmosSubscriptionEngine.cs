@@ -4,9 +4,9 @@ using Core;
 using EventStore;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq;
-using Subscriptions;
+using Projections;
 
-namespace Projections
+namespace Subscriptions
 {
     public class SubscriptionEngine : ISubscriptionEngine
     {
@@ -14,9 +14,9 @@ namespace Projections
         private readonly string _endpointUrl;
         private readonly string _authorizationKey;
         private readonly string _databaseId;
-        private List<Subscription> _eventSubscriptions;
+        private readonly List<Subscription> _eventSubscriptions = new();
         private SubscriptionCheckpoint _subscriptionCheckpoint;
-        private string _instanceName;
+        private readonly string _instanceName;
         private string _subscriptionCheckpointContainerId;
         private string _subscriptionCheckpointItemId;
         private CosmosClient _client;
