@@ -16,8 +16,8 @@ namespace Inventory.EventHandlers
         }
         public async Task Handle(ProductCreated @event)
         {
-            var productInventory = new ProductInventory(@event.ProductId);
-            await _repository.Save(productInventory);
+            var productInventory = new ProductInventory(@event.ProductId, @event.ClientId);
+            await _repository.Save(productInventory, @event.ClientId);
         }
     }
 }

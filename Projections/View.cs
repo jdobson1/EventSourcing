@@ -1,4 +1,5 @@
 using Core;
+using EventStore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 

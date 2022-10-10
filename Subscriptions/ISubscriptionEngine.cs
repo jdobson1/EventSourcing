@@ -1,4 +1,5 @@
 ﻿using Core;
+using EventStore;
 
 namespace Subscriptions
 {

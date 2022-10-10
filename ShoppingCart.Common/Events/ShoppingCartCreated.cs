@@ -1,15 +1,17 @@
-﻿using EventStore;
+﻿using Core.Domain;
 
 namespace ShoppingCart.Common.Events
 {
     public class ShoppingCartCreated : IEvent
     {
         public DateTime Timestamp => DateTime.UtcNow;
+        public string ClientId { get; set; }
         public Guid ShoppingCartId { get; set; }
 
-        public ShoppingCartCreated(Guid shoppingCartId)
+        public ShoppingCartCreated(Guid shoppingCartId, string clientId)
         {
             ShoppingCartId = shoppingCartId;
+            ClientId = clientId;
         }
     }
 }

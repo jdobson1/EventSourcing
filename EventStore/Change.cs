@@ -1,7 +1,6 @@
-using EventStore;
 using Newtonsoft.Json;
 
-namespace Core
+namespace EventStore
 {
     public class Change : EventWrapper
     {

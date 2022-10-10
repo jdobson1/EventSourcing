@@ -1,4 +1,5 @@
 using System;
+using Core.Domain;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 

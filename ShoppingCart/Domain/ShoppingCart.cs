@@ -10,12 +10,12 @@ namespace ShoppingCart.Domain
     {
         private readonly List<ShoppingCartItem> _items = new();
         public IReadOnlyList<ShoppingCartItem> Items => _items;
-
+        public string ClientId { get; private set; }
         #region Constructors
 
-        public ShoppingCart(Guid cartId) : base(cartId)
+        public ShoppingCart(Guid cartId, string clientId) : base(cartId)
         {
-            Apply(new ShoppingCartCreated(cartId));
+            Apply(new ShoppingCartCreated(cartId, clientId));
         }
 
         internal ShoppingCart(IEnumerable<IEvent> events)
@@ -27,12 +27,13 @@ namespace ShoppingCart.Domain
 
         public void AddItem(Guid productId, int quantity)
         {
-            Apply(new ItemAddedToShoppingCart(Id, productId, quantity));
+            Apply(new ItemAddedToShoppingCart(Id, productId, quantity, ClientId));
         }
 
         private void When(ShoppingCartCreated @event)
         {
             Id = @event.ShoppingCartId;
+            ClientId = @event.ClientId;
         }
 
         private void When(ItemAddedToShoppingCart @event)

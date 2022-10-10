@@ -1,4 +1,4 @@
-﻿using EventStore;
+﻿using Core.Domain;
 
 namespace Subscriptions
 {

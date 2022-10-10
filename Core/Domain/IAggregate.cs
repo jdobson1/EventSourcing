@@ -1,6 +1,5 @@
 using System;
 using System.Collections.ObjectModel;
-using EventStore;
 
 namespace Core.Domain
 {

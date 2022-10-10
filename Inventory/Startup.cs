@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using EventStore;
 using Core.Domain;
+using Core.Infrastructure;
 using Projections;
 using Subscriptions;
 using Inventory.Infrastructure.Repositories;
@@ -24,8 +25,8 @@ namespace Inventory
         public override void Configure(IFunctionsHostBuilder builder)
         {
             builder.Services.AddTransient<IRepository<ProductInventory>, ProductInventoryRepository>();
-            builder.Services.AddSingleton<IEventStore>((s) => new CosmosEventStore(this, EndpointUrl, AuthorizationKey, DatabaseId));
-            builder.Services.AddSingleton((s) => InitializeSubscriptions());
+            builder.Services.AddSingleton<IEventStore>((s) => new CosmosEventStore(this, EndpointUrl, AuthorizationKey, DatabaseId, new CosmosClientFactory()));
+            builder.Services.AddSingleton((s) => InitializeSubscriptions(builder.Services));
            
             // builder.Services.AddSingleton<ILoggerProvider, MyLoggerProvider>();
         }
@@ -47,9 +48,9 @@ namespace Inventory
             return Type.GetType($"ShoppingCart.Common.Events.{typeName}, ShoppingCart.Common");
         }
 
-        private ISubscriptionEngine InitializeSubscriptions()
+        private ISubscriptionEngine InitializeSubscriptions(IServiceCollection services)
         {
-            ISubscriptionEngine subscriptionEngine = new SubscriptionEngine(this, EndpointUrl, "inventory", AuthorizationKey, DatabaseId);
+            ISubscriptionEngine subscriptionEngine = new SubscriptionEngine(this, EndpointUrl, "inventory", AuthorizationKey, DatabaseId, services.BuildServiceProvider());
             subscriptionEngine.Subscribe(
                 new Subscription
                 {

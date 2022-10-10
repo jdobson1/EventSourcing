@@ -45,7 +45,7 @@ namespace Orders.Functions
                 new Address(command.ShippingAddress), 
                 await GetOrderItems(command.ShoppingCartId));
 
-            await _repository.Save(order);
+            await _repository.Save(order, command.ClientId);
 
             return new OkObjectResult("Order submitted successfully!");
         }

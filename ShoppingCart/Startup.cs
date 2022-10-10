@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using EventStore;
 using Core.Domain;
+using Core.Infrastructure;
 using ShoppingCart.Infrastructure.Repositories;
 
 [assembly: FunctionsStartup(typeof(ShoppingCart.Startup))]
@@ -18,7 +19,7 @@ namespace ShoppingCart
         public override void Configure(IFunctionsHostBuilder builder)
         {
             builder.Services.AddTransient<IRepository<Domain.ShoppingCart>, ShoppingCartRepository>();
-            builder.Services.AddSingleton<IEventStore>((s) => new CosmosEventStore(this, EndpointUrl, AuthorizationKey, DatabaseId));
+            builder.Services.AddSingleton<IEventStore>((s) => new CosmosEventStore(this, EndpointUrl, AuthorizationKey, DatabaseId, new CosmosClientFactory()));
 
             // builder.Services.AddSingleton<ILoggerProvider, MyLoggerProvider>();
         }

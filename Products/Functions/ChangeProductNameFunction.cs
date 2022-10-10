@@ -30,9 +30,9 @@ namespace Products.Functions
             var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             var command = JsonConvert.DeserializeObject<ChangeProductName>(requestBody);
 
-            var product = await _repository.GetById(command.ProductId);
+            var product = await _repository.GetById(command.ProductId, command.ClientId);
             product.Name = command.ProductName;
-            await _repository.Save(product);
+            await _repository.Save(product, command.ClientId);
 
             return new OkObjectResult("Product name changed successfully!");
         }

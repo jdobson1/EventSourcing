@@ -30,9 +30,9 @@ namespace ShoppingCart.Functions
             var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             var command = JsonConvert.DeserializeObject<AddItemToCart>(requestBody);
 
-            var shoppingCart = new Domain.ShoppingCart(command.CartId);
+            var shoppingCart = new Domain.ShoppingCart(command.CartId, command.ClientId);
             shoppingCart.AddItem(command.ProductId, command.Quantity);
-            await _repository.Save(shoppingCart);
+            await _repository.Save(shoppingCart, command.ClientId);
 
             return new OkObjectResult("Item added to cart successfully!");
         }

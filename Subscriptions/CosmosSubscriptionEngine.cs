@@ -1,9 +1,11 @@
 using System.Net;
 using System.Reflection;
 using Core;
+using Core.Domain;
 using EventStore;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq;
+using Microsoft.Extensions.DependencyInjection;
 using Projections;
 
 namespace Subscriptions
@@ -20,14 +22,16 @@ namespace Subscriptions
         private string _subscriptionCheckpointContainerId;
         private string _subscriptionCheckpointItemId;
         private CosmosClient _client;
+        private readonly IServiceProvider _serviceProvider;
 
         public SubscriptionEngine(IEventTypeResolver eventTypeResolver, string endpointUrl, string instanceName,
-            string authorizationKey, string databaseId)
+            string authorizationKey, string databaseId, IServiceProvider serviceProvider)
         {
             _eventTypeResolver = eventTypeResolver;
             _endpointUrl = endpointUrl;
             _authorizationKey = authorizationKey;
             _databaseId = databaseId;
+            _serviceProvider = serviceProvider;
             _instanceName = instanceName;
         }
 
@@ -62,7 +66,8 @@ namespace Subscriptions
                             var handler = Type.GetType(subscription.EventHandlerType);
                             MethodInfo method = handler.GetMethod("Handle");
                             MethodInfo genericMethod = method.MakeGenericMethod(new Type[] { typeof(IEvent) });
-                            genericMethod.Invoke(Activator.CreateInstance(handler), new object[] { @event });
+                            var concreteHandler = ActivatorUtilities.CreateInstance(_serviceProvider, handler);
+                            genericMethod.Invoke(concreteHandler, new object[] { @event });
 
                             handled = await SaveCheckpointAsync();
                         }

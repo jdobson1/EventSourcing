@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Core;
+using EventStore;
 using Newtonsoft.Json;
 
 namespace Projections

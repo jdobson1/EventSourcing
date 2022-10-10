@@ -38,7 +38,7 @@ namespace Projections
 
                 foreach (var projection in subscribedProjections)
                 {
-                    var viewName = projection.GetViewName(change.StreamInfo.Id, @event);
+                    var viewName = $"{@event.ClientId}-{projection.GetViewName(change.StreamInfo.Id, @event)}";
 
                     var handled = false;
                     while (!handled)

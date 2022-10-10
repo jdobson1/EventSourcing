@@ -1,6 +1,4 @@
-using System;
-using System.Collections.Generic;
-using EventStore;
+using Core.Domain;
 
 namespace Projections
 {

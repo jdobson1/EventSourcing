@@ -5,6 +5,7 @@ namespace Products.Common.Commands
     public class CreateProduct
     {
         public Guid Id {get; set;}
+        public string ClientId { get; set; }
         public string Name {get; set;}
     }
 }

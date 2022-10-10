@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using EventStore;
 using Core.Domain;
 using Products.Common.Events;
 
@@ -13,13 +12,16 @@ namespace Products.Domain
         public string Name
         {
             get => _name;
-            set => Apply(new ProductNameChanged(Id, value));
+            set => Apply(new ProductNameChanged(Id, value, ClientId));
         }
 
+        public string ClientId { get; private set; }
+
         #region Constructors
-        public Product(Guid id, string name) : base(id)
+        public Product(Guid id, string name, string clientId) : base(id)
         {
-            Apply(new ProductCreated(Id, name));
+            Apply(new ProductCreated(Id, name, clientId));
+            ClientId = clientId;
         }
 
         internal Product(IEnumerable<IEvent> events)
@@ -33,6 +35,7 @@ namespace Products.Domain
         {
             Id = @event.ProductId;
             _name = @event.ProductName;
+            ClientId = @event.ClientId;
         }
 
         private void When(ProductNameChanged @event)

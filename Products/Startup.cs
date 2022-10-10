@@ -4,6 +4,7 @@ using System;
 using EventStore;
 using Products.Infrastructure.Repositories;
 using Core.Domain;
+using Core.Infrastructure;
 using Products.Domain;
 
 [assembly: FunctionsStartup(typeof(Products.Startup))]
@@ -12,17 +13,15 @@ namespace Products
 {
     public class Startup : FunctionsStartup, IEventTypeResolver
     {
-        private static string EndpointUrl = Environment.GetEnvironmentVariable("CosmosEndpointUrl");
+        private static readonly string EndpointUrl = Environment.GetEnvironmentVariable("CosmosEndpointUrl");
         private static readonly string AuthorizationKey = Environment.GetEnvironmentVariable("CosmosAuthorizationKey");
-        private static string DatabaseId = Environment.GetEnvironmentVariable("CosmosEventStoreDatabaseId");
+        private static readonly string DatabaseId = Environment.GetEnvironmentVariable("CosmosEventStoreDatabaseId");
 
         public override void Configure(IFunctionsHostBuilder builder)
         {
             builder.Services.AddTransient<IRepository<Product>, ProductRepository>();
-            builder.Services.AddSingleton<IEventStore>((s) =>
-            {
-                return new CosmosEventStore(this, EndpointUrl, AuthorizationKey, DatabaseId);
-            });
+            builder.Services.AddSingleton<ICosmosClientFactory>(s => new CosmosClientFactory());
+            builder.Services.AddSingleton<IEventStore>((s) => new CosmosEventStore(this, EndpointUrl, AuthorizationKey, DatabaseId, s.GetRequiredService<ICosmosClientFactory>()));
 
             // builder.Services.AddSingleton<ILoggerProvider, MyLoggerProvider>();
         }

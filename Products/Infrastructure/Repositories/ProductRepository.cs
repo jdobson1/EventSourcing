@@ -16,22 +16,23 @@ namespace Products.Infrastructure.Repositories
             _eventStore = eventStore;
         }
 
-        public async Task<Product> GetById(Guid id)
+        public async Task<Product> GetById(Guid id, string clientId)
         {
-            var streamId = $"product:{id}";
+            var streamId = $"{clientId}:product:{id}";
 
-            var stream = await _eventStore.LoadStreamAsync(streamId);
+            var stream = await _eventStore.LoadStreamAsync(clientId, streamId);
 
             return new Product(stream.Events);
         }
 
-        public async Task Save(Product aggregate)
+        public async Task Save(Product aggregate, string clientId)
         {
             if (aggregate.Events.Any())
             {
-                var streamId = $"product:{aggregate.Id}";
+                var streamId = $"{clientId}:product:{aggregate.Id}";
 
               await _eventStore.AppendToStreamAsync(
+                    clientId,
                     streamId,
                     aggregate.Version,
                     aggregate.Events);

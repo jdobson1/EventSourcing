@@ -5,6 +5,7 @@ namespace Orders.Common.Commands
     public class SubmitOrder
     {
         public Guid Id { get; set; }
+        public string ClientId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public AddressDto BillingAddress { get; set; }

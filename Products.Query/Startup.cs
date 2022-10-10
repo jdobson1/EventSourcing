@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Products.Query.Projections;
 using Projections;
 using System;
+using Core.Infrastructure;
 
 [assembly: FunctionsStartup(typeof(Products.Query.Startup))]
 
@@ -11,17 +12,15 @@ namespace Products.Query
 {
     public class Startup : FunctionsStartup, IEventTypeResolver
     {
-        private static string EndpointUrl = Environment.GetEnvironmentVariable("CosmosEndpointUrl");
+        private static readonly string EndpointUrl = Environment.GetEnvironmentVariable("CosmosEndpointUrl");
         private static readonly string AuthorizationKey = Environment.GetEnvironmentVariable("CosmosAuthorizationKey");
-        private static string DatabaseId = Environment.GetEnvironmentVariable("CosmosEventStoreDatabaseId");
+        private static readonly string DatabaseId = Environment.GetEnvironmentVariable("CosmosEventStoreDatabaseId");
         
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            builder.Services.AddTransient<IViewRepository>(s => 
-            {
-                return new CosmosViewRepository(EndpointUrl, AuthorizationKey, DatabaseId);
-            });
-
+            builder.Services.AddTransient<IViewRepository>(s => new CosmosViewRepository(EndpointUrl, AuthorizationKey, DatabaseId, s.GetRequiredService<ICosmosDatabaseUserManager>()));
+            builder.Services.AddSingleton<ICosmosDatabaseUserManager, CosmosDatabaseUserManager>();
+            builder.Services.AddSingleton(s => new CosmosClientFactory());
             builder.Services.AddSingleton(s =>
             {
                 var viewRepository = s.GetRequiredService<IViewRepository>();

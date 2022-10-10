@@ -1,4 +1,4 @@
-﻿using EventStore;
+﻿using Core.Domain;
 using Orders.Common.Dtos;
 
 namespace Orders.Common.Events
@@ -13,6 +13,7 @@ namespace Orders.Common.Events
         public List<OrderItemDto> Items { get; set; }
         public Guid ShoppingCartId { get; set; }
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+        public string ClientId { get; set; }
 
         public OrderSubmitted()
         {

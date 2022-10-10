@@ -1,5 +1,4 @@
-using EventStore;
-using System;
+using Core.Domain;
 
 namespace Products.Common.Events
 {
@@ -9,11 +8,13 @@ namespace Products.Common.Events
         public string ProductName {get; set;}
         public Guid ProductCategoryId {get; set;}
         public DateTime Timestamp {get; set;} = DateTime.UtcNow;
+        public string ClientId { get; set; }
 
-        public ProductCreated(Guid productId, string productName)
+        public ProductCreated(Guid productId, string productName, string clientId)
         {
             ProductId = productId;
             ProductName = productName;
+            ClientId = clientId;
         }
 
         public ProductCreated()

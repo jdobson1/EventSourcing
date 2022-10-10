@@ -2,50 +2,64 @@
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Core.Domain;
+using Core.Infrastructure;
 using Microsoft.Azure.Cosmos;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Database = Microsoft.Azure.Cosmos.Database;
+using PartitionKey = Microsoft.Azure.Cosmos.PartitionKey;
+using Permission = Microsoft.Azure.Cosmos.Permission;
+using PermissionMode = Microsoft.Azure.Cosmos.PermissionMode;
+using User = Microsoft.Azure.Cosmos.User;
 
 namespace EventStore
 {
     public class CosmosEventStore : IEventStore
     {
+        private readonly ICosmosClientFactory _cosmosClientFactory;
         private readonly IEventTypeResolver _eventTypeResolver;
-        private readonly CosmosClient _client;
         private readonly string _databaseId;
         private readonly string _containerId;
+        private readonly string _endpointUrl;
+        private readonly string _authorizationKey;
+        private readonly CosmosClient _mainClient;
 
         public CosmosEventStore(IEventTypeResolver eventTypeResolver, string endpointUrl, string authorizationKey,
-            string databaseId, string containerId = "events")
+            string databaseId, ICosmosClientFactory cosmosClientFactory, string containerId = "events")
         {
             _eventTypeResolver = eventTypeResolver;
-            _client = new CosmosClient(endpointUrl, authorizationKey, new CosmosClientOptions
-            {
-                ConnectionMode = Microsoft.Azure.Cosmos.ConnectionMode.Gateway
-            });
-            
+            _endpointUrl = endpointUrl;
+            _authorizationKey = authorizationKey;
             _databaseId = databaseId;
+            _cosmosClientFactory = cosmosClientFactory;
             _containerId = containerId;
+            _mainClient = _cosmosClientFactory.Create(_endpointUrl, _authorizationKey,
+                new CosmosClientOptions() { ConnectionMode = ConnectionMode.Gateway });
         }
 
-        public async Task<EventStream> LoadStreamAsync(string streamId)
+        public async Task<EventStream> LoadStreamAsync(string clientId, string streamId)
         {
-            Container container = _client.GetContainer(_databaseId, _containerId);
+            var client = _cosmosClientFactory.CreateForUser(_endpointUrl, _authorizationKey, clientId, streamId, _databaseId,
+                new CosmosClientOptions() { ConnectionMode = ConnectionMode.Gateway});
+            var container = client.GetContainer(_databaseId, _containerId);
 
             var sqlQueryText = "SELECT * FROM events e"
                 + " WHERE e.stream.id = @streamId"
                 + " ORDER BY e.stream.version"; 
 
-            QueryDefinition queryDefinition = new QueryDefinition(sqlQueryText)
+            var queryDefinition = new QueryDefinition(sqlQueryText)
                 .WithParameter("@streamId", streamId);
 
             int version = 0;
             var events = new List<IEvent>();
 
-            FeedIterator<EventWrapper> feedIterator = container.GetItemQueryIterator<EventWrapper>(queryDefinition);
+            var feedIterator = container.GetItemQueryIterator<EventWrapper>(queryDefinition,
+                requestOptions: new QueryRequestOptions() { PartitionKey = new PartitionKey(streamId) });
+
             while (feedIterator.HasMoreResults)
             {
-                Microsoft.Azure.Cosmos.FeedResponse<EventWrapper> response = await feedIterator.ReadNextAsync();
+                FeedResponse<EventWrapper> response = await feedIterator.ReadNextAsync();
                 foreach (var eventWrapper in response)
                 {
                     version = eventWrapper.StreamInfo.Version;
@@ -57,25 +71,29 @@ namespace EventStore
             return new EventStream(streamId, version, events);
         }
 
-        public async Task<EventStream> LoadStreamAsync(string streamId, int fromVersion)
+        public async Task<EventStream> LoadStreamAsync(string clientId, string streamId, int fromVersion)
         {
-            Container container = _client.GetContainer(_databaseId, _containerId);
+            var client = _cosmosClientFactory.CreateForUser(_endpointUrl, _authorizationKey, clientId, streamId, _databaseId,
+                new CosmosClientOptions() { ConnectionMode = ConnectionMode.Gateway });
+            var container = client.GetContainer(_databaseId, _containerId);
 
             var sqlQueryText = "SELECT * FROM events e"
                 + " WHERE e.stream.id = @streamId AND e.stream.version >= @fromVersion"
                 + " ORDER BY e.stream.version"; 
 
-            QueryDefinition queryDefinition = new QueryDefinition(sqlQueryText)
+            var queryDefinition = new QueryDefinition(sqlQueryText)
                 .WithParameter("@streamId", streamId)
                 .WithParameter("@fromVersion", fromVersion);
 
             int version = 0;
             var events = new List<IEvent>();
 
-            FeedIterator<EventWrapper> feedIterator = container.GetItemQueryIterator<EventWrapper>(queryDefinition);
+            var feedIterator = container.GetItemQueryIterator<EventWrapper>(queryDefinition,
+                requestOptions: new QueryRequestOptions() { PartitionKey = new PartitionKey(streamId) });
+
             while (feedIterator.HasMoreResults)
             {
-                Microsoft.Azure.Cosmos.FeedResponse<EventWrapper> response = await feedIterator.ReadNextAsync();
+                FeedResponse<EventWrapper> response = await feedIterator.ReadNextAsync();
                 foreach (var eventWrapper in response)
                 {
                     version = eventWrapper.StreamInfo.Version;
@@ -87,11 +105,11 @@ namespace EventStore
             return new EventStream(streamId, version, events);
         }
 
-        public async Task<bool> AppendToStreamAsync(string streamId, int expectedVersion, IEnumerable<IEvent> events)
+        public async Task<bool> AppendToStreamAsync(string clientId, string streamId, int expectedVersion, IEnumerable<IEvent> events)
         {
-            Container container = _client.GetContainer(_databaseId, _containerId);
+            var container = _mainClient.GetContainer(_databaseId, _containerId);
 
-            PartitionKey partitionKey = new PartitionKey(streamId);
+            var partitionKey = new PartitionKey(streamId);
 
             dynamic[] parameters = new dynamic[]
             {
@@ -100,7 +118,15 @@ namespace EventStore
                 SerializeEvents(streamId, expectedVersion, events)
             };
 
-            return await container.Scripts.ExecuteStoredProcedureAsync<bool>("spAppendToStream", partitionKey, parameters);
+            var result = await container.Scripts.ExecuteStoredProcedureAsync<bool>("spAppendToStream", partitionKey, parameters);
+
+            if (!result) return result;
+            
+            var database = _mainClient.GetDatabase(_databaseId);
+            var cosmosDbUser = await CreateUserAsync(clientId, database);
+            await CreatePermissionAsync(cosmosDbUser, streamId, container);
+           
+            return result;
         }
 
         private static string SerializeEvents(string streamId, int expectedVersion, IEnumerable<IEvent> events)
@@ -122,9 +148,11 @@ namespace EventStore
 
         #region Snapshot Functionality
 
-        private async Task<TSnapshot> LoadSnapshotAsync<TSnapshot>(string streamId)
+        private async Task<TSnapshot> LoadSnapshotAsync<TSnapshot>(string clientId, string streamId)
         {
-            Container container = _client.GetContainer(_databaseId, _containerId);
+            var client = _cosmosClientFactory.CreateForUser(_endpointUrl, _authorizationKey, clientId, streamId, _databaseId,
+                new CosmosClientOptions() { ConnectionMode = ConnectionMode.Gateway });
+            Container container = client.GetContainer(_databaseId, _containerId);
 
             PartitionKey partitionKey = new PartitionKey(streamId);
 
@@ -138,5 +166,51 @@ namespace EventStore
         }
 
         #endregion
+
+        private async Task<User> CreateUserAsync(string userId, Database database)
+        {
+            User cosmosDbUser = null;
+            var user = database.GetUser(userId);
+
+            try
+            {
+                var cosmosDbUserResponse = await user.ReadAsync();
+                cosmosDbUser = cosmosDbUserResponse.User;
+            }
+            catch (CosmosException ex)
+            {
+                if (ex.StatusCode == HttpStatusCode.NotFound)
+                {
+                    cosmosDbUser = await database.UpsertUserAsync(userId);
+                }
+            }
+
+            return cosmosDbUser;
+        }
+
+        private async Task<Permission> CreatePermissionAsync(User user, string partitionKey, Container container)
+        {
+            var permissionId = $"permission_{user.Id}_{partitionKey}";
+            var permission = user?.GetPermission(permissionId);
+
+            try
+            {
+                await permission?.ReadAsync()!;
+            }
+            catch (CosmosException ex)
+            {
+                if (ex.StatusCode == HttpStatusCode.NotFound)
+                {
+                    await user.CreatePermissionAsync(
+                        new PermissionProperties(
+                            id: permissionId,
+                            permissionMode: PermissionMode.All,
+                            container: container,
+                            resourcePartitionKey: new PartitionKey(partitionKey)), tokenExpiryInSeconds: 18000);
+                }
+            }
+
+            return permission;
+        }
     }
 }

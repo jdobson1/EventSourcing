@@ -1,4 +1,3 @@
-using EventStore;
 using System.Collections.ObjectModel;
 
 namespace Core.Domain

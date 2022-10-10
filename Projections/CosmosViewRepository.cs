@@ -1,5 +1,6 @@
 using System.Net;
 using System.Threading.Tasks;
+using Core.Infrastructure;
 using Microsoft.Azure.Cosmos;
 
 namespace Projections
@@ -8,9 +9,10 @@ namespace Projections
     {
         protected readonly CosmosClient Client;
         protected readonly string DatabaseId;
+        private readonly ICosmosDatabaseUserManager _cosmosDatabaseUserManager;
         protected readonly string ContainerId;
 
-        public CosmosViewRepository(string endpointUrl, string authorizationKey, string databaseId,
+        public CosmosViewRepository(string endpointUrl, string authorizationKey, string databaseId, ICosmosDatabaseUserManager cosmosDatabaseUserManager,
             string containerId = "views")
         {
             Client = new CosmosClient(endpointUrl, authorizationKey, new CosmosClientOptions
@@ -18,6 +20,7 @@ namespace Projections
                 ConnectionMode = ConnectionMode.Gateway
             });
             DatabaseId = databaseId;
+            _cosmosDatabaseUserManager = cosmosDatabaseUserManager;
             ContainerId = containerId;
         }
 
