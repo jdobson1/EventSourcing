@@ -20,8 +20,10 @@ namespace Products.Domain
         #region Constructors
         public Product(Guid id, string name, string clientId) : base(id)
         {
+            if (string.IsNullOrEmpty(name))
+                throw new DomainException("Name is required");
+
             Apply(new ProductCreated(Id, name, clientId));
-            ClientId = clientId;
         }
 
         internal Product(IEnumerable<IEvent> events)

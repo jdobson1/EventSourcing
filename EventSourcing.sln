@@ -244,6 +244,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "profile", "profile", "{2A65
 		Web\projects\mfe-profile\src\app\profile\profile.module.ts = Web\projects\mfe-profile\src\app\profile\profile.module.ts
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Products.UnitTests", "Products.UnitTests\Products.UnitTests.csproj", "{00EAC565-BEC0-4D3F-A349-F80B36E6D960}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -310,6 +312,10 @@ Global
 		{2A465062-F424-4DE6-865C-5F13E242A092}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A465062-F424-4DE6-865C-5F13E242A092}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A465062-F424-4DE6-865C-5F13E242A092}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00EAC565-BEC0-4D3F-A349-F80B36E6D960}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00EAC565-BEC0-4D3F-A349-F80B36E6D960}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00EAC565-BEC0-4D3F-A349-F80B36E6D960}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00EAC565-BEC0-4D3F-A349-F80B36E6D960}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -353,6 +359,7 @@ Global
 		{20B435B6-1158-4582-8BAF-AEE9839FD91C} = {7A408B90-A1EF-49C5-B96A-9CD114CE8F9A}
 		{274A5F7F-14BC-4254-9326-D650E6364D89} = {59C0BA55-6CC3-43B3-8699-61C0E683280B}
 		{2A652477-D557-4EDF-9286-38FAE2B5A0FB} = {59C0BA55-6CC3-43B3-8699-61C0E683280B}
+		{00EAC565-BEC0-4D3F-A349-F80B36E6D960} = {754B09F1-5463-4508-9A8E-C2A2217FE1C2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2E9A127E-1433-4378-9B7A-B7CFDECE56BA}
