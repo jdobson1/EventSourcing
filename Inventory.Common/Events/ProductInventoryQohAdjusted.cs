@@ -9,7 +9,7 @@ namespace Inventory.Common.Events
             ProductInventoryId = productInventoryId;
             ProductId = productId;
             Adjustment = adjustment;
-            ClientId = clientId;
+            UserId = clientId;
         }
 
         public ProductInventoryQohAdjusted()
@@ -17,7 +17,7 @@ namespace Inventory.Common.Events
         }
 
         public DateTime Timestamp => DateTime.UtcNow;
-        public string ClientId { get; set; }
+        public string UserId { get; set; }
         public Guid ProductInventoryId { get; set; }
         public Guid ProductId { get; set; }
         public int Adjustment { get; set; }

@@ -13,7 +13,7 @@ namespace Orders.Common.Events
         public List<OrderItemDto> Items { get; set; }
         public Guid ShoppingCartId { get; set; }
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
-        public string ClientId { get; set; }
+        public string UserId { get; set; }
 
         public OrderSubmitted()
         {

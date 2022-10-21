@@ -33,7 +33,7 @@ namespace ShoppingCart.Domain
         private void When(ShoppingCartCreated @event)
         {
             Id = @event.ShoppingCartId;
-            ClientId = @event.ClientId;
+            ClientId = @event.UserId;
         }
 
         private void When(ItemAddedToShoppingCart @event)

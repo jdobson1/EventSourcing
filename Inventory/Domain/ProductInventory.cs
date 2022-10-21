@@ -33,7 +33,7 @@ namespace Inventory.Domain
         private void When(ProductInventoryCreated @event)
         {
             Id = @event.ProductId;
-            ClientId = @event.ClientId;
+            ClientId = @event.UserId;
         }
 
         private void When(ProductInventoryQohAdjusted @event)

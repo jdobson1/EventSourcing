@@ -7,11 +7,11 @@ namespace Inventory.Common.Events
         public ProductInventoryCreated(Guid productId, string clientId)
         {
             ProductId = productId;
-            ClientId = clientId;
+            UserId = clientId;
         }
 
         public DateTime Timestamp => DateTime.UtcNow;
-        public string ClientId { get; set; }
+        public string UserId { get; set; }
 
         public Guid ProductId { get; set; }
     }

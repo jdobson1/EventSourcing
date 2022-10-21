@@ -37,7 +37,7 @@ namespace Products.Domain
         {
             Id = @event.ProductId;
             _name = @event.ProductName;
-            ClientId = @event.ClientId;
+            ClientId = @event.UserId;
         }
 
         private void When(ProductNameChanged @event)

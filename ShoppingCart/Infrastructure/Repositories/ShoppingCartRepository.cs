@@ -24,6 +24,11 @@ namespace ShoppingCart.Infrastructure.Repositories
             return new Domain.ShoppingCart(stream.Events);
         }
 
+        public Task<Domain.ShoppingCart> GetByIndexedProperty(string indexedPropertyValue)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task Save(Domain.ShoppingCart aggregate, string clientId)
         {
             if (aggregate.Events.Any())

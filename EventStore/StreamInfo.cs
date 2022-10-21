@@ -9,5 +9,8 @@ namespace EventStore
 
         [JsonProperty("version")]
         public int Version { get; set; }
+
+        [JsonProperty("index")]
+        public string Index { get; set; }
     }
 }

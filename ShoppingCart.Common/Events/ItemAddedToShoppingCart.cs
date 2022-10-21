@@ -9,7 +9,7 @@ namespace ShoppingCart.Common.Events
             ShoppingCartId = id;
             ProductId = productId;
             Quantity = quantity;
-            ClientId = clientId;
+            UserId = clientId;
         }
 
         public ItemAddedToShoppingCart()
@@ -17,7 +17,7 @@ namespace ShoppingCart.Common.Events
         }
 
         public DateTime Timestamp => DateTime.UtcNow;
-        public string ClientId { get; set; }
+        public string UserId { get; set; }
         public Guid ShoppingCartId { get; set; }
         public Guid ProductId { get; set; }
         public int Quantity { get; set; }

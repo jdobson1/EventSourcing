@@ -19,9 +19,9 @@ namespace Inventory.EventHandlers
         {
             foreach (var item in @event.Items)
             {
-                var productInventory = await _repository.GetById(item.ProductId, @event.ClientId);
+                var productInventory = await _repository.GetById(item.ProductId, @event.UserId);
                 productInventory.AdjustQuantityOnHand(item.Quantity);
-                await _repository.Save(productInventory, @event.ClientId);
+                await _repository.Save(productInventory, @event.UserId);
             }
         }
     }

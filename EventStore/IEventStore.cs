@@ -10,7 +10,8 @@ namespace EventStore
         Task<EventStream> LoadStreamAsync(string clientId, string streamId);
 
         Task<EventStream> LoadStreamAsync(string clientId, string streamId, int fromVersion);
-  
+        Task<EventStream> LoadStreamAsync(string indexedPropertyValue);
+
         Task<bool> AppendToStreamAsync(
             string clientId,
             string streamId,

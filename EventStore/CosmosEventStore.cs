@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Threading.Tasks;
 using Core.Domain;
 using Core.Infrastructure;
@@ -105,6 +106,38 @@ namespace EventStore
             return new EventStream(streamId, version, events);
         }
 
+        public async Task<EventStream> LoadStreamAsync(string indexedPropertyValue)
+        {
+            var container = _mainClient.GetContainer(_databaseId, _containerId);
+
+            var sqlQueryText = "SELECT * FROM events e"
+                               + " WHERE e.stream.index = @indexedPropertyValue"
+                               + " ORDER BY e.stream.version";
+
+            var queryDefinition = new QueryDefinition(sqlQueryText)
+                .WithParameter("@indexedPropertyValue", indexedPropertyValue);
+
+            int version = 0;
+            var events = new List<IEvent>();
+            var streamId = string.Empty;
+
+            var feedIterator = container.GetItemQueryIterator<EventWrapper>(queryDefinition);
+
+            while (feedIterator.HasMoreResults)
+            {
+                FeedResponse<EventWrapper> response = await feedIterator.ReadNextAsync();
+                foreach (var eventWrapper in response)
+                {
+                    version = eventWrapper.StreamInfo.Version;
+                    streamId = eventWrapper.StreamInfo.Id;
+
+                    events.Add(eventWrapper.GetEvent(_eventTypeResolver));
+                }
+            }
+
+            return new EventStream(streamId, version, events);
+        }
+
         public async Task<bool> AppendToStreamAsync(string clientId, string streamId, int expectedVersion, IEnumerable<IEvent> events)
         {
             var container = _mainClient.GetContainer(_databaseId, _containerId);
@@ -137,13 +170,21 @@ namespace EventStore
                 StreamInfo = new StreamInfo
                 {
                     Id = streamId,
-                    Version = expectedVersion
+                    Version = expectedVersion,
+                    Index = GetIndexedProperty(e)
                 },
                 EventType = e.GetType().Name,
                 EventData = JObject.FromObject(e)
             });
 
             return JsonConvert.SerializeObject(items);
+        }
+
+        private static string GetIndexedProperty(IEvent @event)
+        {
+            var prop = @event.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .FirstOrDefault(p => p.GetCustomAttributes(typeof(Index), false).Count() == 1);
+            return prop?.GetValue(@event, null)?.ToString();
         }
 
         #region Snapshot Functionality
