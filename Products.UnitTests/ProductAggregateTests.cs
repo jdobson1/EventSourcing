@@ -6,7 +6,7 @@ namespace Products.UnitTests
     [TestClass]
     public class ProductAggregateTests
     {
-        private readonly FakeRepository<Product> _fakeRepository = new(new ProductFactory());
+        private readonly FakeRepository<Product> _fakeRepository = new();
 
         [TestMethod]
         public void ShouldCreateProductAndApplyEvents()
@@ -34,13 +34,13 @@ namespace Products.UnitTests
 
             var product = new Product(productId, productName, clientId);
 
-            await _fakeRepository.Save(product, string.Empty);
+            await _fakeRepository.Save(product, clientId);
 
             Assert.IsTrue(product.Events.Count == 1);
             Assert.AreEqual(productId, product.Id);
             Assert.AreEqual(productName, product.Name);
 
-            var productCreated = await _fakeRepository.GetById(productId, string.Empty);
+            var productCreated = await _fakeRepository.GetById(productId, clientId);
 
             productCreated.Name = newProductName;
 
@@ -49,9 +49,25 @@ namespace Products.UnitTests
             Assert.IsTrue(productCreated.Events.Count == 1);
             Assert.AreEqual(productCreated.Name, newProductName);
 
-            var productNameChanged = await _fakeRepository.GetById(productId, string.Empty);
+            var productNameChanged = await _fakeRepository.GetById(productId, clientId);
 
             Assert.AreEqual(newProductName, productNameChanged.Name);
+        }
+
+        [TestMethod]
+        public async Task ShouldGetProductByIndex()
+        {
+            var productId = Guid.NewGuid();
+            var productName = "Test Product";
+            var clientId = Guid.NewGuid().ToString();
+
+            var product = new Product(productId, productName, clientId);
+
+            await _fakeRepository.Save(product, clientId);
+
+            var savedProduct = await _fakeRepository.GetByIndexedProperty(productName);
+
+            Assert.IsNotNull(savedProduct);
         }
 
         [TestMethod]

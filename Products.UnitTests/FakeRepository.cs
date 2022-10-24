@@ -6,7 +6,7 @@ namespace Products.UnitTests;
 public class FakeRepository<T> : RepositoryBase<T> where T : AggregateBase
 {
     private readonly Dictionary<Guid, List<IEvent>> _eventStore = new();
-    public FakeRepository() : base(null)
+    public FakeRepository() : base(null!)
     {
     }
 
@@ -18,7 +18,13 @@ public class FakeRepository<T> : RepositoryBase<T> where T : AggregateBase
 
     public override Task<T> GetByIndexedProperty(string indexedPropertyValue)
     {
-        throw new NotImplementedException();
+        var indexedEvent =
+            _eventStore.Values.SingleOrDefault(x => x.Exists(x => GetIndexedProperty(x) == indexedPropertyValue));
+        
+        var aggregateStreamKvp = _eventStore.SingleOrDefault(pair => pair.Value.Contains(indexedEvent?.FirstOrDefault()!));
+
+        return Task.FromResult((T)Activator.CreateInstance(typeof(T), BindingFlags.NonPublic | BindingFlags.Instance,
+            null, new object[] { _eventStore[aggregateStreamKvp.Key].OrderBy(x => x.Timestamp) }, null)!);
     }
 
     protected override Task OnSave(T aggregate, string clientId)
@@ -40,5 +46,11 @@ public class FakeRepository<T> : RepositoryBase<T> where T : AggregateBase
         aggregate.Apply(aggregate.Events);
             
         return Task.CompletedTask;
+    }
+    private static string GetIndexedProperty(IEvent @event)
+    {
+        var prop = @event.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            .FirstOrDefault(p => p.GetCustomAttributes(typeof(EventStore.Index), false).Count() == 1);
+        return prop?.GetValue(@event, null)?.ToString() ?? string.Empty;
     }
 }
