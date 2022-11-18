@@ -25,7 +25,7 @@ namespace Orders
 
             builder.Services.AddTransient<IRepository<Order>, OrderRepository>();
             builder.Services.AddSingleton<ICosmosDatabaseUserManager, CosmosDatabaseUserManager>();
-            builder.Services.AddSingleton<IEventStore>((s) => new CosmosEventStore(this, EndpointUrl, AuthorizationKey, DatabaseId, new CosmosClientFactory()));
+            builder.Services.AddSingleton<IEventStore>((s) => new CosmosEventStore(this, EndpointUrl, AuthorizationKey, DatabaseId, new CosmosClientFactory(), "orders"));
             builder.Services.AddTransient<IViewRepository>(s =>
             {
                 var cosmosUserManager = s.GetRequiredService<ICosmosDatabaseUserManager>();

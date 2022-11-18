@@ -21,7 +21,7 @@ namespace Products
         {
             builder.Services.AddTransient<IRepository<Product>, ProductRepository>();
             builder.Services.AddSingleton<ICosmosClientFactory>(s => new CosmosClientFactory());
-            builder.Services.AddSingleton<IEventStore>((s) => new CosmosEventStore(this, EndpointUrl, AuthorizationKey, DatabaseId, s.GetRequiredService<ICosmosClientFactory>()));
+            builder.Services.AddSingleton<IEventStore>((s) => new CosmosEventStore(this, EndpointUrl, AuthorizationKey, DatabaseId, s.GetRequiredService<ICosmosClientFactory>(), "useradmin"));
 
             // builder.Services.AddSingleton<ILoggerProvider, MyLoggerProvider>();
         }

@@ -25,7 +25,7 @@ namespace Inventory
         public override void Configure(IFunctionsHostBuilder builder)
         {
             builder.Services.AddTransient<IRepository<ProductInventory>, ProductInventoryRepository>();
-            builder.Services.AddSingleton<IEventStore>((s) => new CosmosEventStore(this, EndpointUrl, AuthorizationKey, DatabaseId, new CosmosClientFactory()));
+            builder.Services.AddSingleton<IEventStore>((s) => new CosmosEventStore(this, EndpointUrl, AuthorizationKey, DatabaseId, new CosmosClientFactory(), "inventory"));
             builder.Services.AddSingleton((s) => InitializeSubscriptions(builder.Services));
            
             // builder.Services.AddSingleton<ILoggerProvider, MyLoggerProvider>();

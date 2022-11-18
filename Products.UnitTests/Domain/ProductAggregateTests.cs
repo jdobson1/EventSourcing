@@ -1,7 +1,7 @@
 using Core.Domain;
 using Products.Domain;
 
-namespace Products.UnitTests
+namespace Products.UnitTests.Domain
 {
     [TestClass]
     public class ProductAggregateTests
@@ -17,7 +17,7 @@ namespace Products.UnitTests
 
             var product = new Product(productId, productName, clientId);
 
-            _fakeRepository.Save(product, string.Empty);
+            _fakeRepository.Save(product, clientId);
 
             Assert.AreEqual(productId, product.Id);
             Assert.AreEqual(productName, product.Name);
@@ -28,7 +28,7 @@ namespace Products.UnitTests
         public async Task ShouldCreateProductAndChangeName()
         {
             var productId = Guid.NewGuid();
-            var productName = "Test Product"; 
+            var productName = "Test Product";
             var newProductName = "New Test Product Name";
             var clientId = Guid.NewGuid().ToString();
 
@@ -45,7 +45,7 @@ namespace Products.UnitTests
             productCreated.Name = newProductName;
 
             await _fakeRepository.Save(productCreated, string.Empty);
-            
+
             Assert.IsTrue(productCreated.Events.Count == 1);
             Assert.AreEqual(productCreated.Name, newProductName);
 

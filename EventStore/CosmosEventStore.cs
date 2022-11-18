@@ -25,9 +25,10 @@ namespace EventStore
         private readonly string _endpointUrl;
         private readonly string _authorizationKey;
         private readonly CosmosClient _mainClient;
+        private readonly string _platformDomain;
 
         public CosmosEventStore(IEventTypeResolver eventTypeResolver, string endpointUrl, string authorizationKey,
-            string databaseId, ICosmosClientFactory cosmosClientFactory, string containerId = "events")
+            string databaseId, ICosmosClientFactory cosmosClientFactory, string platformDomain, string containerId = "events")
         {
             _eventTypeResolver = eventTypeResolver;
             _endpointUrl = endpointUrl;
@@ -35,6 +36,7 @@ namespace EventStore
             _databaseId = databaseId;
             _cosmosClientFactory = cosmosClientFactory;
             _containerId = containerId;
+            _platformDomain = platformDomain;
             _mainClient = _cosmosClientFactory.Create(_endpointUrl, _authorizationKey,
                 new CosmosClientOptions() { ConnectionMode = ConnectionMode.Gateway });
         }
@@ -162,7 +164,7 @@ namespace EventStore
             return result;
         }
 
-        private static string SerializeEvents(string streamId, int expectedVersion, IEnumerable<IEvent> events)
+        private string SerializeEvents(string streamId, int expectedVersion, IEnumerable<IEvent> events)
         {
             var items = events.Select(e => new EventWrapper
             {
@@ -174,7 +176,8 @@ namespace EventStore
                     Index = GetIndexedProperty(e)
                 },
                 EventType = e.GetType().Name,
-                EventData = JObject.FromObject(e)
+                EventData = JObject.FromObject(e),
+                PlatformDomain = _platformDomain
             });
 
             return JsonConvert.SerializeObject(items);

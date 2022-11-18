@@ -19,7 +19,7 @@ namespace ShoppingCart
         public override void Configure(IFunctionsHostBuilder builder)
         {
             builder.Services.AddTransient<IRepository<Domain.ShoppingCart>, ShoppingCartRepository>();
-            builder.Services.AddSingleton<IEventStore>((s) => new CosmosEventStore(this, EndpointUrl, AuthorizationKey, DatabaseId, new CosmosClientFactory()));
+            builder.Services.AddSingleton<IEventStore>((s) => new CosmosEventStore(this, EndpointUrl, AuthorizationKey, DatabaseId, new CosmosClientFactory(), "shoppingcart"));
 
             // builder.Services.AddSingleton<ILoggerProvider, MyLoggerProvider>();
         }

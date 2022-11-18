@@ -19,6 +19,9 @@ namespace EventStore
         [JsonProperty("eventData")]
         public JObject EventData { get; set; }
 
+        [JsonProperty("platformDomain")]
+        public string PlatformDomain { get; set; }
+
         public IEvent GetEvent(IEventTypeResolver eventTypeResolver)
         {
             Type eventType = eventTypeResolver.GetEventType(EventType);

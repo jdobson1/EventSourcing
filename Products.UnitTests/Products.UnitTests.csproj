@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Products.Query\Products.Query.csproj" />
     <ProjectReference Include="..\Products\Products.csproj" />
   </ItemGroup>
 
