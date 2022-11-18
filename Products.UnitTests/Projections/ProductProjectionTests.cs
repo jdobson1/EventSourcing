@@ -15,7 +15,7 @@ namespace Products.UnitTests.Projections
             var productId = Guid.NewGuid();
             var productName = "product-name";
             var clientId = Guid.NewGuid();
-            var productsView = new ProductsView() { Payload = new JObject() };
+            var productsView = new ProductsView();
             var projection = new ProductsProjection();
             var createdEvent = new ProductCreated(productId, productName, clientId.ToString());
             
