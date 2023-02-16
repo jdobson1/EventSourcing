@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using Core.Domain;
 using Products.Common.Events;
 
@@ -49,6 +50,25 @@ namespace Products.Domain
         {
             ((dynamic)this).When((dynamic)@event);
         }
+
+        #region Snapshot Functionality
+
+        public Product(ProductSnapshot snapshot, int version, IEnumerable<IEvent> events)
+        {
+            Id = snapshot.Id;
+            Name = snapshot.Name;
+            ClientId = snapshot.ClientId;
+            Version = version;
+
+            Apply(events);
+        }
+
+        public ProductSnapshot GetSnapshot()
+        {
+            return new ProductSnapshot(Id, Name, ClientId);
+        }
+
+        #endregion
     }
 }
 

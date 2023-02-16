@@ -25,6 +25,11 @@ namespace Orders.Infrastructure.Repositories
             return new Order(stream.Events);
         }
 
+        public Task<Order> GetByIndexedProperty(string indexedPropertyValue, string clientId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<Order> GetByIndexedProperty(string indexedPropertyValue)
         {
             throw new NotImplementedException();

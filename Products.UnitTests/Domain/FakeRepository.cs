@@ -16,6 +16,11 @@ public class FakeRepository<T> : RepositoryBase<T> where T : AggregateBase
             null, new object[] { _eventStore[id].OrderBy(x => x.Timestamp) }, null)!);
     }
 
+    public override Task<T> GetByIndexedProperty(string indexedPropertyValue, string clientId)
+    {
+        throw new NotImplementedException();
+    }
+
     public override Task<T> GetByIndexedProperty(string indexedPropertyValue)
     {
         var indexedEvent =

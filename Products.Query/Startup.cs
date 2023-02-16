@@ -14,16 +14,20 @@ namespace Products.Query
     {
         private static readonly string EndpointUrl = Environment.GetEnvironmentVariable("CosmosEndpointUrl");
         private static readonly string AuthorizationKey = Environment.GetEnvironmentVariable("CosmosAuthorizationKey");
-        private static readonly string DatabaseId = Environment.GetEnvironmentVariable("CosmosEventStoreDatabaseId");
-        
+        private static readonly string MaterializedViewDatabaseId = Environment.GetEnvironmentVariable("CosmosMaterializedViewDatabaseId");
+
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            builder.Services.AddTransient<IViewRepository>(s => new CosmosViewRepository(EndpointUrl, AuthorizationKey, DatabaseId, s.GetRequiredService<ICosmosDatabaseUserManager>()));
-            builder.Services.AddSingleton<ICosmosDatabaseUserManager, CosmosDatabaseUserManager>();
-            builder.Services.AddSingleton(s => new CosmosClientFactory());
+            builder.Services.AddSingleton<ICosmosClientFactory, CosmosClientFactory>();
+            builder.Services.AddTransient<ITenantViewRepository>(s =>
+            {
+                var cosmosClientFactory = s.GetRequiredService<ICosmosClientFactory>();
+                return new TenantCosmosViewRepository(EndpointUrl, AuthorizationKey, MaterializedViewDatabaseId, cosmosClientFactory);
+            });
+            
             builder.Services.AddSingleton(s =>
             {
-                var viewRepository = s.GetRequiredService<IViewRepository>();
+                var viewRepository = s.GetRequiredService<ITenantViewRepository>();
                 return InitializeProjectionEngine(viewRepository);
             });
         }
@@ -33,9 +37,9 @@ namespace Products.Query
             return Type.GetType($"Products.Common.Events.{typeName}, Products.Common");
         }
 
-        private IProjectionEngine InitializeProjectionEngine(IViewRepository viewRepository)
+        private ITenantProjectionEngine InitializeProjectionEngine(ITenantViewRepository viewRepository)
         {
-            var projectionEngine = new ProjectionEngine(this, viewRepository);
+            var projectionEngine = new TenantProjectionEngine(this, viewRepository);
 
             projectionEngine.RegisterProjection(new ProductsProjection());
 

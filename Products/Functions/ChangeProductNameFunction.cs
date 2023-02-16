@@ -34,7 +34,7 @@ namespace Products.Functions
             product.Name = command.ProductName;
             await _repository.Save(product, command.ClientId);
 
-            var productByIndex = await _repository.GetByIndexedProperty(product.Name);
+            var productByIndex = await _repository.GetByIndexedProperty(product.Name, command.ClientId);
 
             return new OkObjectResult("Product name changed successfully!");
         }

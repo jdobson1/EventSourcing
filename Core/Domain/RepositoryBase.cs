@@ -15,6 +15,7 @@ namespace Core.Domain
 
         public abstract Task<T> GetById(Guid id, string clientId);
 
+        public abstract Task<T> GetByIndexedProperty(string indexedPropertyValue, string clientId);
         public abstract Task<T> GetByIndexedProperty(string indexedPropertyValue);
 
         public virtual async Task Save(T aggregate, string clientId)

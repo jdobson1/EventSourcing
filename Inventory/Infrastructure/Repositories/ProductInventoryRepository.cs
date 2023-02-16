@@ -25,6 +25,11 @@ namespace Inventory.Infrastructure.Repositories
             return new ProductInventory(stream.Events);
         }
 
+        public Task<ProductInventory> GetByIndexedProperty(string indexedPropertyValue, string clientId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<ProductInventory> GetByIndexedProperty(string indexedPropertyValue)
         {
             throw new NotImplementedException();

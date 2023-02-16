@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Core.Domain;
@@ -22,6 +23,13 @@ namespace Products.Infrastructure.Repositories
             var streamId = $"{clientId}:product:{id}";
 
             var stream = await _eventStore.LoadStreamAsync(clientId, streamId);
+
+            return new Product(stream.Events);
+        }
+
+        public override async Task<Product> GetByIndexedProperty(string indexedPropertyValue, string clientId)
+        {
+            var stream = await _eventStore.LoadStreamAsync(indexedPropertyValue);
 
             return new Product(stream.Events);
         }

@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Core;
 using EventStore;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.WebJobs;
@@ -14,10 +13,10 @@ namespace Products.Query.Functions.Projectors
 {
     public class Projector
     {
-        private readonly IProjectionEngine _projectionEngine;
+        private readonly ITenantProjectionEngine _projectionEngine;
         private IAsyncCollector<SignalRMessage> _signalRMessages;
 
-        public Projector(IProjectionEngine projectionEngine)
+        public Projector(ITenantProjectionEngine projectionEngine)
         {
             _projectionEngine = projectionEngine;
         }

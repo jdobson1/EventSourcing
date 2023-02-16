@@ -7,7 +7,7 @@ namespace Core.Domain
         private readonly List<IEvent> _events = new();
         public ReadOnlyCollection<IEvent> Events => _events.AsReadOnly();
         public Guid Id { get; protected set; }
-        public int Version { get; private set; }
+        public int Version { get; protected set; }
 
         protected AggregateBase(Guid id)
         {
