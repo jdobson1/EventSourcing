@@ -8,7 +8,7 @@ using Products.Domain;
 
 namespace Products.Infrastructure.Repositories
 {
-    public class ProductRepositorySnapshotDecorator : RepositoryBase<Product>, IRepository<Product>
+    public class ProductRepositorySnapshotDecorator : RepositoryBase<Product>, IRepositorySnapShotDecorator<Product>
     {
         private readonly ISnapshotStore _snapshotStore;
         private readonly IEventStore _eventStore;

@@ -47,3 +47,4 @@ namespace Products.Query.Functions.Projectors
         }
     }
 }
+

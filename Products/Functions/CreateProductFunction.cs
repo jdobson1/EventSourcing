@@ -15,7 +15,7 @@ namespace Products.Functions
     public class CreateProductFunction
     {
         private readonly IRepository<Product> _repository;
-        public CreateProductFunction(IRepository<Product> repository)
+        public CreateProductFunction(IRepositorySnapShotDecorator<Product> repository)
         {
             _repository = repository;
         }

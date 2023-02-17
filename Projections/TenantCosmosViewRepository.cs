@@ -1,6 +1,8 @@
 using System;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using Azure.Core;
 using Core.Infrastructure;
 using Microsoft.Azure.Cosmos;
 using Container = Microsoft.Azure.Cosmos.Container;
@@ -36,15 +38,19 @@ public class TenantCosmosViewRepository : ITenantViewRepository
 
     public async Task<View> LoadViewAsync(Guid clientId, string name)
     {
-        var container = await GetContainerAsync(clientId, name);
-        var partitionKey = new PartitionKey(name);
-
         try
         {
+            var container = await GetContainerAsync(clientId, name);
+            var partitionKey = new PartitionKey(name);
+
             var response = await container.ReadItemAsync<View>(name, partitionKey);
             return response.Resource;
         }
-        catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+        catch (CosmosException ex) when (ex.StatusCode is HttpStatusCode.NotFound or HttpStatusCode.Forbidden)
+        {
+            return new View();
+        }
+        catch (Exception ex)
         {
             return new View();
         }
@@ -52,11 +58,11 @@ public class TenantCosmosViewRepository : ITenantViewRepository
 
     public async Task<TView> LoadViewAsync<TView>(Guid clientId, string name) where TView : new()
     {
-        var container = await GetContainerAsync(clientId, name);
-        var partitionKey = new PartitionKey(name);
-
         try
         {
+            var container = await GetContainerAsync(clientId, name);
+            var partitionKey = new PartitionKey(name);
+
             var response = await container.ReadItemAsync<TView>(name, partitionKey);
             return response.Resource;
         }
@@ -68,22 +74,26 @@ public class TenantCosmosViewRepository : ITenantViewRepository
 
     public async Task<bool> SaveViewAsync(Guid clientId, string name, View view)
     {
-        var container = await GetContainerAsync(clientId, name);
-        var partitionKey = new PartitionKey(name);
-
-        var item = new
-        {
-            id = name,
-            logicalCheckpoint = view.LogicalCheckpoint,
-            payload = view.Payload
-        };
-
         try
         {
-            await container.UpsertItemAsync(item, partitionKey, new ItemRequestOptions
+            var client = _cosmosClientFactory.Create(EndpointUrl, AuthorizationKey, new CosmosClientOptions() { ConnectionMode = ConnectionMode.Gateway });
+            var database = client?.GetDatabase(DatabaseId);
+            var container = client?.GetContainer(DatabaseId, ContainerId);
+            var partitionKey = new PartitionKey(name);
+
+            var item = new
+            {
+                id = name,
+                logicalCheckpoint = view.LogicalCheckpoint,
+                payload = view.Payload
+            };
+
+            await container?.UpsertItemAsync(item, partitionKey, new ItemRequestOptions
             {
                 IfMatchEtag = view.Etag
-            });
+            })!;
+
+            await CreateUserAndPermissionsAsync(clientId.ToString(), name, database, container);
 
             return true;
         }
@@ -95,23 +105,10 @@ public class TenantCosmosViewRepository : ITenantViewRepository
 
     private async Task<Container> GetContainerAsync(Guid clientId, string streamId)
     {
-        var clientOptions = new CosmosClientOptions() { ConnectionMode = ConnectionMode.Gateway };
-        
-        try
-        {
-            var client = _cosmosClientFactory.CreateForUser(EndpointUrl, AuthorizationKey, clientId.ToString(),
-                streamId, DatabaseId, clientOptions);
-            return client.GetContainer(DatabaseId, ContainerId);
-        }
-        catch (Exception)
-        {
-            var client = _cosmosClientFactory.Create(EndpointUrl, AuthorizationKey, clientOptions);
-            var database = client?.GetDatabase(DatabaseId);
-            var container = client?.GetContainer(DatabaseId, ContainerId);
-            await CreateUserAndPermissionsAsync(clientId.ToString(), streamId, database, container);
-
-            return container;
-        }
+        var client = _cosmosClientFactory.CreateForUser(EndpointUrl, AuthorizationKey, clientId.ToString(),
+            streamId, DatabaseId, new CosmosClientOptions() { ConnectionMode = ConnectionMode.Gateway });
+        return client.GetContainer(DatabaseId, ContainerId);
+       
     }
 
     private async Task CreateUserAndPermissionsAsync(string userId, string partitionKey, Database database, Container container)
