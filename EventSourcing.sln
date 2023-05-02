@@ -244,7 +244,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "profile", "profile", "{2A65
 		Web\projects\mfe-profile\src\app\profile\profile.module.ts = Web\projects\mfe-profile\src\app\profile\profile.module.ts
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Products.UnitTests", "Products.UnitTests\Products.UnitTests.csproj", "{00EAC565-BEC0-4D3F-A349-F80B36E6D960}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Products.UnitTests", "Products.UnitTests\Products.UnitTests.csproj", "{00EAC565-BEC0-4D3F-A349-F80B36E6D960}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sagas", "Sagas\Sagas.csproj", "{D68063B1-67F6-4549-AF24-10C7A44A416B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -316,6 +318,10 @@ Global
 		{00EAC565-BEC0-4D3F-A349-F80B36E6D960}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00EAC565-BEC0-4D3F-A349-F80B36E6D960}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00EAC565-BEC0-4D3F-A349-F80B36E6D960}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D68063B1-67F6-4549-AF24-10C7A44A416B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D68063B1-67F6-4549-AF24-10C7A44A416B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D68063B1-67F6-4549-AF24-10C7A44A416B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D68063B1-67F6-4549-AF24-10C7A44A416B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

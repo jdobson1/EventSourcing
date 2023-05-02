@@ -4,7 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Products.Query.Projections;
 using Projections;
 using System;
+using Core.Domain;
 using Core.Infrastructure;
+using Sagas;
 
 [assembly: FunctionsStartup(typeof(Products.Query.Startup))]
 

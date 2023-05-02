@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Core;
+using Core.Domain;
 using EventStore;
 using Microsoft.Azure.Cosmos;
 

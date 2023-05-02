@@ -18,6 +18,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\Orders.Common\Orders.Common.csproj" />
+    <ProjectReference Include="..\Sagas\Sagas.csproj" />
     <ProjectReference Include="..\ShoppingCart.Common\ShoppingCart.Common.csproj" />
   </ItemGroup>
 </Project>

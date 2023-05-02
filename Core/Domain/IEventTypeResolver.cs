@@ -1,6 +1,4 @@
-using System;
-
-namespace EventStore
+namespace Core.Domain
 {
     public interface IEventTypeResolver
     {
