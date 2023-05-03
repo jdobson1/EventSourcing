@@ -19,6 +19,8 @@ namespace ShoppingCart
         private static readonly string EndpointUrl = Environment.GetEnvironmentVariable("CosmosEndpointUrl");
         private static readonly string AuthorizationKey = Environment.GetEnvironmentVariable("CosmosAuthorizationKey");
         private static readonly string DatabaseId = Environment.GetEnvironmentVariable("CosmosEventStoreDatabaseId");
+        private static readonly string SagaDatabaseId = Environment.GetEnvironmentVariable("CosmosSagaDatabaseId");
+        private static readonly string SagaStateContainerId = Environment.GetEnvironmentVariable("CosmosSagaStateContainerId");
 
         public override void Configure(IFunctionsHostBuilder builder)
         {
@@ -44,7 +46,7 @@ namespace ShoppingCart
         {
             var sagaEngine = new SagaEngine(this);
             sagaEngine.RegisterSaga(new ShoppingCartSaga(new CosmosStateProvider(cosmosClientFactory,
-                new CosmosDatabaseContext(EndpointUrl, AuthorizationKey, "", DatabaseId,
+                new CosmosDatabaseContext(EndpointUrl, AuthorizationKey, SagaStateContainerId, SagaDatabaseId,
                     new CosmosClientOptions() { ConnectionMode = ConnectionMode.Gateway }))));
 
             return sagaEngine;
