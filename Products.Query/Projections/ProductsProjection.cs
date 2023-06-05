@@ -29,7 +29,7 @@ namespace Products.Query.Projections
         {
             // parse streamId to get the client id
             var streamParts = streamId.Split(":");
-            return Guid.Parse(streamParts[0].Replace("clientid-", ""));
+            return Guid.Parse(streamParts[0]);
         }
     }
 }

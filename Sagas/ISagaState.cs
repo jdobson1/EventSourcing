@@ -4,7 +4,7 @@ namespace Sagas;
 
 public interface ISagaState
 {
-    Guid CorrelationId { get; set; }
-    SagaStatus Status { get; set; }
-    JObject Payload { get; set; }
+    Guid Id { get; set; }
+    bool Completed { get; }
+    internal void MarkCompleted();
 }

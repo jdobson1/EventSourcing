@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using Core.Infrastructure;
 using Microsoft.Azure.Cosmos;
+using Newtonsoft.Json.Linq;
 
 namespace Sagas.StateProviders;
 
@@ -15,75 +16,49 @@ public class CosmosStateProvider : ISagaStateProvider
         _cosmosDatabaseContext = cosmosDatabaseContext;
     }
 
-    public async Task<bool> DeleteAsync(Guid correlationId)
+    public async Task DeleteAsync<TSagaState>(Guid id)
     {
-        try
-        {
-            var client = _cosmosClientFactory.Create(_cosmosDatabaseContext.EndpointUrl, _cosmosDatabaseContext.AuthorizationKey, new CosmosClientOptions() { ConnectionMode = ConnectionMode.Gateway });
-            var container = client?.GetContainer(_cosmosDatabaseContext.DatabaseId, _cosmosDatabaseContext.ContainerId);
-            var partitionKey = new PartitionKey(correlationId.ToString());
-            
-            await container?.DeleteItemAsync<CosmosSagaState>(correlationId.ToString(), partitionKey)!;
-           
-            return true;
-        }
-        catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.PreconditionFailed)
-        {
-            return false;
-        }
+        var client = _cosmosClientFactory.Create(_cosmosDatabaseContext.EndpointUrl, _cosmosDatabaseContext.AuthorizationKey, new CosmosClientOptions() { ConnectionMode = ConnectionMode.Gateway });
+        var container = client?.GetContainer(_cosmosDatabaseContext.DatabaseId, _cosmosDatabaseContext.ContainerId);
+        var partitionKey = new PartitionKey(id.ToString());
+        
+        await container?.DeleteItemAsync<TSagaState>(id.ToString(), partitionKey)!;
     }
 
-    public async Task<SagaState> GetAsync(Guid correlationId)
+    public async Task<TSagaState> GetAsync<TSagaState>(Guid id) where TSagaState : class, ISagaState, new()
     {
         try
         {
             var client = _cosmosClientFactory.Create(_cosmosDatabaseContext.EndpointUrl, _cosmosDatabaseContext.AuthorizationKey, new CosmosClientOptions() { ConnectionMode = ConnectionMode.Gateway });
             var container = client?.GetContainer(_cosmosDatabaseContext.DatabaseId, _cosmosDatabaseContext.ContainerId);
-            var partitionKey = new PartitionKey(correlationId.ToString());
+            var partitionKey = new PartitionKey(id.ToString());
 
-            var response = await container?.ReadItemAsync<CosmosSagaState>(correlationId.ToString(), partitionKey)!;
-            return response.Resource;
-        }
-        catch (CosmosException ex) when (ex.StatusCode is HttpStatusCode.NotFound or HttpStatusCode.Forbidden)
-        {
-            return new CosmosSagaState();
+            var response = await container?.ReadItemAsync<SagaStateWrapper>(id.ToString(), partitionKey)!;
+            return response.Resource.Payload.ToObject<TSagaState>();
         }
         catch (Exception ex)
         {
-            return new CosmosSagaState();
+            return new TSagaState();
         }
+       
     }
 
-    public async Task<bool> IsCompletedAsync(Guid correlationId)
+    public async Task<bool> SaveAsync(Guid id, ISagaState sagaState)
     {
-        var state = await GetAsync(correlationId);
-        return state.Status == SagaStatus.Completed;
-    }
+        var client = _cosmosClientFactory.Create(_cosmosDatabaseContext.EndpointUrl, _cosmosDatabaseContext.AuthorizationKey, new CosmosClientOptions() { ConnectionMode = ConnectionMode.Gateway });
+        var container = client?.GetContainer(_cosmosDatabaseContext.DatabaseId, _cosmosDatabaseContext.ContainerId);
+        var partitionKey = new PartitionKey(id.ToString());
 
-    public async Task<bool> SaveAsync(Guid correlationId, SagaState sagaState)
-    {
-        try
+        sagaState.Id = id;
+
+        var item = new
         {
-            var client = _cosmosClientFactory.Create(_cosmosDatabaseContext.EndpointUrl, _cosmosDatabaseContext.AuthorizationKey, new CosmosClientOptions() { ConnectionMode = ConnectionMode.Gateway });
-            var container = client?.GetContainer(_cosmosDatabaseContext.DatabaseId, _cosmosDatabaseContext.ContainerId);
-            var partitionKey = new PartitionKey(correlationId.ToString());
+            id = id,
+            payload = JObject.FromObject(sagaState)
+        };
+        
+        await container?.UpsertItemAsync(item, partitionKey)!;
 
-            var item = new
-            {
-                correlationId = correlationId,
-                payload = sagaState.Payload
-            };
-
-            await container?.UpsertItemAsync(item, partitionKey, new ItemRequestOptions
-            {
-                IfMatchEtag = ((CosmosSagaState)sagaState).Etag
-            })!;
-
-            return true;
-        }
-        catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.PreconditionFailed)
-        {
-            return false;
-        }
+        return true;
     }
 }

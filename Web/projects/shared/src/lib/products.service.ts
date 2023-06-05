@@ -4,6 +4,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError, retry } from 'rxjs/operators';
 import { HttpHeaders } from '@angular/common/http';
+//import * as uuid from 'uuid';
 
 @Injectable({
   providedIn: 'root'
@@ -19,14 +20,15 @@ export class ProductsService {
         };
     }
 
-    public getProducts() : Observable<Product[]> {
-        return this.http.post<Product[]>('http://localhost:7073/api/GetProducts', this.httpOptions);
+    public getProducts(): Observable<Product[]> {
+        let getProducts: GetProducts = { ClientId: "53c1cfdc-399b-48b2-81ee-5970063f26bb" };
+        return this.http.post<Product[]>('http://localhost:7073/api/GetProducts', getProducts, this.httpOptions);
     }
 
     public createProduct(product: Product) {
         
 
-        let createProduct: CreateProduct = { Id: product.id, Name: product.name };
+        let createProduct: CreateProduct = { Id: product.id, Name: product.name, ClientId: "53c1cfdc-399b-48b2-81ee-5970063f26bb" };
         //console.log(createProduct);
         return this.http.post('http://localhost:7179/api/CreateProduct', createProduct, this.httpOptions);
     }
@@ -49,7 +51,9 @@ export class ProductsService {
 export class CreateProduct {
     public Id: string | undefined;
     public Name!: string;
+    public ClientId!: string;
 }
 
 export class GetProducts {
+    public ClientId!: string;
 }

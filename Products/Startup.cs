@@ -19,9 +19,10 @@ namespace Products
 
         public override void Configure(IFunctionsHostBuilder builder)
         {
+            builder.Services.AddLogging();
             builder.Services.AddTransient<IRepository<Product>, ProductRepository>();
             builder.Services.AddTransient<IRepositorySnapShotDecorator<Product>, ProductRepositorySnapshotDecorator>();
-            builder.Services.AddSingleton<ICosmosClientFactory>(s => new CosmosClientFactory());
+            builder.Services.AddSingleton<ICosmosClientFactory, CosmosClientFactory>();
             builder.Services.AddSingleton<IEventStore>((s) => new CosmosEventStore(this, EndpointUrl, AuthorizationKey, DatabaseId, s.GetRequiredService<ICosmosClientFactory>(), "useradmin"));
 
             // builder.Services.AddSingleton<ILoggerProvider, MyLoggerProvider>();

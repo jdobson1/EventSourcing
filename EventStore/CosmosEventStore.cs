@@ -43,7 +43,7 @@ namespace EventStore
 
         public async Task<EventStream> LoadStreamAsync(string clientId, string streamId)
         {
-            var client = _cosmosClientFactory.CreateForUser(_endpointUrl, _authorizationKey, clientId, streamId, _databaseId,
+            var client = await _cosmosClientFactory.CreateForUser(_endpointUrl, _authorizationKey, clientId, streamId, _databaseId, _containerId,
                 new CosmosClientOptions() { ConnectionMode = ConnectionMode.Gateway});
             var container = client.GetContainer(_databaseId, _containerId);
 
@@ -76,7 +76,7 @@ namespace EventStore
 
         public async Task<EventStream> LoadStreamAsync(string clientId, string streamId, int fromVersion)
         {
-            var client = _cosmosClientFactory.CreateForUser(_endpointUrl, _authorizationKey, clientId, streamId, _databaseId,
+            var client = await _cosmosClientFactory.CreateForUser(_endpointUrl, _authorizationKey, clientId, streamId, _databaseId, _containerId,
                 new CosmosClientOptions() { ConnectionMode = ConnectionMode.Gateway });
             var container = client.GetContainer(_databaseId, _containerId);
 
@@ -194,7 +194,7 @@ namespace EventStore
 
         private async Task<TSnapshot> LoadSnapshotAsync<TSnapshot>(string clientId, string streamId)
         {
-            var client = _cosmosClientFactory.CreateForUser(_endpointUrl, _authorizationKey, clientId, streamId, _databaseId,
+            var client = await _cosmosClientFactory.CreateForUser(_endpointUrl, _authorizationKey, clientId, streamId, _databaseId, _containerId,
                 new CosmosClientOptions() { ConnectionMode = ConnectionMode.Gateway });
             Container container = client.GetContainer(_databaseId, _containerId);
 

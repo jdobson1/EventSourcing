@@ -24,9 +24,19 @@ namespace ShoppingCart
 
         public override void Configure(IFunctionsHostBuilder builder)
         {
+            builder.Services.AddLogging();
             builder.Services.AddSingleton<ICosmosClientFactory, CosmosClientFactory>();
+            builder.Services.AddSingleton<ICosmosDatabaseUserManager, CosmosDatabaseUserManager>();
+            builder.Services.AddSingleton<CosmosDatabaseContext>(x => new CosmosDatabaseContext(EndpointUrl,
+                AuthorizationKey, SagaStateContainerId, SagaDatabaseId, 18000,
+                new CosmosClientOptions { ConnectionMode = ConnectionMode.Gateway }));
             builder.Services.AddTransient<IRepository<Domain.ShoppingCart>, ShoppingCartRepository>();
-            builder.Services.AddSingleton<IEventStore>((s) => new CosmosEventStore(this, EndpointUrl, AuthorizationKey, DatabaseId, new CosmosClientFactory(), "shoppingcart"));
+            builder.Services.AddSingleton<IEventStore>((s) =>
+            {
+                var cosmosUserManager = s.GetRequiredService<ICosmosDatabaseUserManager>();
+                return new CosmosEventStore(this, EndpointUrl, AuthorizationKey, DatabaseId,
+                        new CosmosClientFactory(cosmosUserManager), "shoppingcart");
+            });
 
             builder.Services.AddSingleton(s =>
             {
@@ -46,7 +56,7 @@ namespace ShoppingCart
         {
             var sagaEngine = new SagaEngine(this);
             sagaEngine.RegisterSaga(new ShoppingCartSaga(new CosmosStateProvider(cosmosClientFactory,
-                new CosmosDatabaseContext(EndpointUrl, AuthorizationKey, SagaStateContainerId, SagaDatabaseId,
+                new CosmosDatabaseContext(EndpointUrl, AuthorizationKey, SagaStateContainerId, SagaDatabaseId, 18000,
                     new CosmosClientOptions() { ConnectionMode = ConnectionMode.Gateway }))));
 
             return sagaEngine;

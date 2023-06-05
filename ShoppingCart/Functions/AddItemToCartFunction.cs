@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +23,7 @@ namespace ShoppingCart.Functions
 
         [FunctionName("AddItemToCart")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
             ILogger log)
         {
             log.LogInformation("Adding item to cart...");
@@ -30,7 +31,8 @@ namespace ShoppingCart.Functions
             var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             var command = JsonConvert.DeserializeObject<AddItemToCart>(requestBody);
 
-            var shoppingCart = new Domain.ShoppingCart(command.CartId, command.ClientId);
+            var shoppingCart = await _repository.GetById(command.CartId, command.ClientId) ?? new Domain.ShoppingCart(command.CartId, command.ClientId);
+
             shoppingCart.AddItem(command.ProductId, command.Quantity);
             await _repository.Save(shoppingCart, command.ClientId);
 

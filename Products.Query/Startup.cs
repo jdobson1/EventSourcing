@@ -4,8 +4,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Products.Query.Projections;
 using Projections;
 using System;
+using System.Collections.Generic;
 using Core.Domain;
 using Core.Infrastructure;
+using Microsoft.Azure.Cosmos;
 using Sagas;
 
 [assembly: FunctionsStartup(typeof(Products.Query.Startup))]
@@ -20,11 +22,17 @@ namespace Products.Query
 
         public override void Configure(IFunctionsHostBuilder builder)
         {
+            builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSingleton<ICosmosClientFactory, CosmosClientFactory>();
+            builder.Services.AddSingleton<ICosmosDatabaseUserManager, CosmosDatabaseUserManager>();
+            builder.Services.AddSingleton<CosmosDatabaseContext>(x => new CosmosDatabaseContext(EndpointUrl,
+                AuthorizationKey, "views", MaterializedViewDatabaseId, 18000,
+                new CosmosClientOptions { ConnectionMode = ConnectionMode.Gateway }));
             builder.Services.AddTransient<ITenantViewRepository>(s =>
             {
                 var cosmosClientFactory = s.GetRequiredService<ICosmosClientFactory>();
-                return new TenantCosmosViewRepository(EndpointUrl, AuthorizationKey, MaterializedViewDatabaseId, cosmosClientFactory);
+                var cosmosUserManager = s.GetRequiredService<ICosmosDatabaseUserManager>();
+                return new TenantCosmosViewRepository(EndpointUrl, AuthorizationKey, MaterializedViewDatabaseId, cosmosClientFactory, cosmosUserManager);
             });
             
             builder.Services.AddSingleton(s =>

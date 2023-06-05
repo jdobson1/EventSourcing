@@ -1,95 +1,199 @@
-﻿using Core.Domain;
-using Newtonsoft.Json.Linq;
+﻿using System.Linq.Expressions;
+using Core.Domain;
 
 namespace Sagas;
 
-public abstract class Saga<TStartedBy, TState> : ISaga where TState : SagaState where TStartedBy : IEvent
+public abstract class Saga
 {
-    public TState State;
-    public readonly ISagaStateProvider StateProvider;
-    private readonly Dictionary<Type, Action<IEvent>?> _handlers;
-    private readonly bool _deleteUponCompletion;
+    protected readonly ISagaStateProvider StateProvider;
+    protected List<SagaLocatorConfiguration> LocatorConfigurations = new();
+    protected List<SagaEvent> SagaEvents = new();
 
-    protected Saga(ISagaStateProvider stateProvider, bool deleteUponCompletion = false)
+    protected Saga(ISagaStateProvider stateProvider)
     {
         StateProvider = stateProvider;
-        _deleteUponCompletion = deleteUponCompletion;
-        _handlers = new Dictionary<Type, Action<IEvent>?>();
     }
 
-    public async Task<bool> HandleAsync(IEvent @event)
+    protected internal abstract void ConfigureSagaEventCorrelation(IConfigureSagaToEventCorrelation sagaToEventCorrelation);
+    protected abstract Task CompleteAsync();
+    internal abstract Task<bool> HandleAsync(IEvent @event);
+    internal abstract bool IsSubscribedTo(IEvent @event);
+
+    internal void Initialize()
     {
-        var sagaCorrelation = OnCorrelating(@event);
+        var correlator = new SagaCorrelator();
+        ConfigureSagaEventCorrelation(correlator);
+       
+        var sagaType = GetType();
+        var sagaStateType = sagaType.BaseType?.GenericTypeArguments.FirstOrDefault();
 
-        if (!sagaCorrelation.IsCorrelated) return false;
+        if (sagaStateType == null) throw new Exception($"Saga {sagaType.Name} must specify a state type");
+
+        SagaEvents = GetAssociatedEvents(sagaType)
+            .ToList();
+
+        ///todo: validate associated events
+
+        LocatorConfigurations = correlator.Mappings;
         
-        State = await LoadStateAsync(sagaCorrelation.CorrelationId.GetValueOrDefault());
+        foreach (var associatedEvent in SagaEvents)
+        {
+            if (associatedEvent.CanStartSaga)
+            {
+                RegisterHandler(associatedEvent.EventType, GetMethod(sagaType, associatedEvent.EventType, typeof(IAmStartedByEvents<>)));
+                continue;
+            }
 
-        if (State.Status == SagaStatus.Completed) return false;
+            RegisterHandler(associatedEvent.EventType, GetMethod(sagaType, associatedEvent.EventType, typeof(IHandleEvents<>)));
+        }
+    }
+    internal abstract void RegisterHandler(Type eventType, Func<object, object, Task> handler);
 
-        if (@event.GetType() == typeof(TStartedBy) && State.CorrelationId == Guid.Empty)
-            Start(sagaCorrelation.CorrelationId.GetValueOrDefault());
+    protected static Func<object, object, Task> GetMethod(Type targetType, Type messageType, Type interfaceGenericType)
+    {
+        var interfaceType = interfaceGenericType.MakeGenericType(messageType);
+
+        if (!interfaceType.IsAssignableFrom(targetType)) return null;
+        
+        var methodInfo = targetType.GetInterfaceMap(interfaceType).TargetMethods.FirstOrDefault();
+        if (methodInfo == null) return null;
+        
+        var target = Expression.Parameter(typeof(object));
+        var eventParam = Expression.Parameter(typeof(object));
+        var castTarget = Expression.Convert(target, targetType);
+        var methodParameters = methodInfo.GetParameters();
+        var eventCastParam = Expression.Convert(eventParam, methodParameters.ElementAt(0).ParameterType);
+
+        Expression body = Expression.Call(castTarget, methodInfo, eventCastParam);
+
+        return Expression.Lambda<Func<object, object, Task>>(body, target, eventParam).Compile();
+    }
+
+    protected static IEnumerable<SagaEvent> GetAssociatedEvents(Type sagaType)
+    {
+        var result = GetEventsCorrespondingToFilterOnSaga(sagaType, typeof(IAmStartedByEvents<>))
+            .Select(t => new SagaEvent(t, true)).ToList();
+
+        foreach (var messageType in GetEventsCorrespondingToFilterOnSaga(sagaType, typeof(IHandleEvents<>)))
+        {
+            if (result.Any(m => m.EventType == messageType))
+            {
+                continue;
+            }
+            result.Add(new SagaEvent(messageType, false));
+        }
+
+        return result;
+    }
+
+    protected static IEnumerable<Type> GetEventsCorrespondingToFilterOnSaga(Type sagaType, Type filter)
+    {
+        foreach (var interfaceType in sagaType.GetInterfaces())
+        {
+            foreach (var argument in interfaceType.GetGenericArguments())
+            {
+                var genericType = filter.MakeGenericType(argument);
+                var isOfFilterType = genericType == interfaceType;
+                if (!isOfFilterType)
+                {
+                    continue;
+                }
+                yield return argument;
+            }
+        }
+    }
+}
+
+public abstract class Saga<TSagaState> : Saga where TSagaState : class, ISagaState, new()
+{
+    public TSagaState State;
+    private readonly Dictionary<Type, Func<object, object, Task>?> _handlers;
+    private readonly bool _deleteUponCompletion;
+
+    protected Saga(ISagaStateProvider stateProvider, bool deleteUponCompletion = false) : base(stateProvider)
+    {
+        _deleteUponCompletion = deleteUponCompletion;
+        _handlers = new Dictionary<Type, Func<object, object, Task>?>();
+    }
+
+    protected internal override void ConfigureSagaEventCorrelation(IConfigureSagaToEventCorrelation sagaToEventCorrelation)
+    {
+        ConfigureSagaEventCorrelation(new SagaPropertyMapper<TSagaState>(sagaToEventCorrelation));
+    }
+
+    public abstract void ConfigureSagaEventCorrelation(SagaPropertyMapper<TSagaState> sagaPropertyMapper);
+
+    internal override async Task<bool> HandleAsync(IEvent @event)
+    {
+        var locator = LocatorConfigurations.FirstOrDefault(x => x.EventType == @event.GetType());
+
+        if (locator == null) return true;
+
+        var eventPropertyValue = (Guid)(locator?.GetEventPropertyValue(@event) ??
+                                        throw new Exception(
+                                            $"Value for event {locator?.EventTypeName} correlation property is null for saga {GetType().Name}"));
+        
+        var state = await GetSagaState(eventPropertyValue) as TSagaState;
+
+        if (state == null || state.Id == Guid.Empty)
+        {
+            // can this event start the saga?
+            var canStartSaga = SagaEvents.Any(x => x.CanStartSaga && x.EventType == @event.GetType());
+
+            if (!canStartSaga) return true;
+
+            State = Activator.CreateInstance<TSagaState>();
+            State.Id = eventPropertyValue;
+        }
+        else
+        {
+            State = state;
+        }
+
+        if (State.Completed) return true;
 
         return await ApplyAsync(@event);
     }
-    
-    public abstract SagaCorrelation OnCorrelating(IEvent @event);
 
-    public async Task CompleteAsync()
+    protected override async Task CompleteAsync()
     {
-        if (State.Status == SagaStatus.Completed) return;
+        if (State.Completed) return;
 
         if (_deleteUponCompletion)
         {
-            await StateProvider.DeleteAsync(State.CorrelationId);
+            await StateProvider.DeleteAsync<TSagaState>(State.Id);
             return;
         }
 
-        State.Status = SagaStatus.Completed;
-        await StateProvider.SaveAsync(State.CorrelationId, State);
+        State.MarkCompleted();
+        await StateProvider.SaveAsync(State.Id, State);
     }
 
-    public bool IsActive()
-    {
-        return State.Status == SagaStatus.Active;
-    }
-
-    public bool IsCompleted()
-    {
-        return State.Status == SagaStatus.Completed;
-    }
-
-    public bool IsSubscribedTo(IEvent @event) => _handlers.ContainsKey(@event.GetType());
+    internal override bool IsSubscribedTo(IEvent @event) => _handlers.ContainsKey(@event.GetType());
     
-    public void RegisterHandler<TEvent>(Action<TEvent> handler)
-        where TEvent : IEvent
+    internal override void RegisterHandler(Type eventType, Func<object, object, Task> handler)
     {
-        _handlers[typeof(TEvent)] = (e) => handler((TEvent)e);
-    }
-
-    private void Start(Guid correlationId)
-    {
-        State.CorrelationId = correlationId;
-        State.Status = SagaStatus.Active;
+        _handlers[eventType] = handler;
     }
 
     private async Task<bool> ApplyAsync(IEvent @event)
     {
-        var payload = State.Payload.ToObject<TState>();
-
         var eventType = @event.GetType();
-        if (_handlers.TryGetValue(eventType, out Action<IEvent>? handler))
-        {
-            handler(@event);
 
-            State.Payload = JObject.FromObject(payload);
+        if (_handlers.TryGetValue(eventType, out Func<object, object, Task>? handler))
+        {
+            if (handler == null)
+                throw new Exception($"Handler for event type {eventType} not found on saga {GetType()}");
+            await handler.Invoke(this, @event);
+            
+            return await StateProvider.SaveAsync(State.Id, State);
         }
 
-        return await StateProvider.SaveAsync(State.CorrelationId, State);
+        return false;
     }
 
-    private async Task<TState> LoadStateAsync(Guid correlationId)
+    private async Task<ISagaState> GetSagaState(Guid id)
     {
-        return (TState)await StateProvider.GetAsync(correlationId);
+        return await StateProvider.GetAsync<TSagaState>(id);
     }
 }

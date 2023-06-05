@@ -3,25 +3,38 @@ using EventStore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.Logging;
 
 namespace ShoppingCart.Infrastructure.Repositories
 {
     public class ShoppingCartRepository : IRepository<Domain.ShoppingCart>
     {
         private readonly IEventStore _eventStore;
+        private readonly ILogger<ShoppingCartRepository> _logger;
 
-        public ShoppingCartRepository(IEventStore eventStore)
+        public ShoppingCartRepository(IEventStore eventStore, ILogger<ShoppingCartRepository> logger)
         {
             _eventStore = eventStore;
+            _logger = logger;
         }
 
         public async Task<Domain.ShoppingCart> GetById(Guid id, string clientId)
         {
-            var streamId = $"shoppingcart:{id}";
+            try
+            {
+                var streamId = $"{clientId}:shoppingcart:{id}";
 
-            var stream = await _eventStore.LoadStreamAsync(clientId, streamId);
+                var stream = await _eventStore.LoadStreamAsync(clientId, streamId);
 
-            return new Domain.ShoppingCart(stream.Events);
+                return new Domain.ShoppingCart(stream.Events);
+            }
+            catch (CosmosException ex)
+            {
+                _logger.LogError(ex.Message);
+            }
+
+            return new Domain.ShoppingCart(id, clientId);
         }
 
         public Task<Domain.ShoppingCart> GetByIndexedProperty(string indexedPropertyValue, string clientId)
@@ -38,7 +51,7 @@ namespace ShoppingCart.Infrastructure.Repositories
         {
             if (aggregate.Events.Any())
             {
-                var streamId = $"shoppingcart:{aggregate.Id}";
+                var streamId = $"{clientId}:shoppingcart:{aggregate.Id}";
 
                 await _eventStore.AppendToStreamAsync(
                       clientId,

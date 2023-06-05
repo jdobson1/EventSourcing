@@ -2,8 +2,7 @@
 
 public interface ISagaStateProvider
 {
-    Task<bool> DeleteAsync(Guid correlationId);
-    Task<SagaState> GetAsync(Guid correlationId);
-    Task<bool> IsCompletedAsync(Guid correlationId);
-    Task<bool> SaveAsync(Guid correlationId, SagaState sagaState);
+    Task DeleteAsync<TSagaState>(Guid id);
+    Task<TSagaState> GetAsync<TSagaState>(Guid id) where TSagaState : class, ISagaState, new();
+    Task<bool> SaveAsync(Guid id, ISagaState sagaState);
 }

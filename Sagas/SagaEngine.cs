@@ -1,11 +1,15 @@
-﻿using Core.Domain;
+﻿using System.Linq.Expressions;
+using System.Reflection;
+using Core.Domain;
+using EventStore;
+using Newtonsoft.Json.Serialization;
 
 namespace Sagas;
 
 public class SagaEngine : ISagaEngine
 {
     private readonly IEventTypeResolver _eventTypeResolver;
-    private readonly List<ISaga> _sagas = new();
+    private readonly List<Saga> _sagas = new();
 
     public SagaEngine(IEventTypeResolver eventTypeResolver)
     {
@@ -13,16 +17,19 @@ public class SagaEngine : ISagaEngine
     }
 
 
-    public void RegisterSaga(ISaga saga)
+    public void RegisterSaga(Saga saga)
     {
+        saga.Initialize();
         _sagas.Add(saga);
     }
-
-    public async Task HandleEventAsync(IReadOnlyCollection<PlatformMessage> platformMessages)
+    
+    public async Task HandleEventAsync(IReadOnlyCollection<Change> changes)
     {
-        foreach (var platformMessage in platformMessages)
+        foreach (var change in changes)
         {
-            var @event = platformMessage.GetEvent(_eventTypeResolver);
+            var @event = change.GetEvent(_eventTypeResolver);
+
+            if (@event == null) continue;
 
             var subscribedSagas = _sagas
                 .Where(saga => saga.IsSubscribedTo(@event));
@@ -35,8 +42,6 @@ public class SagaEngine : ISagaEngine
                 {
                     handled = await saga.HandleAsync(@event);
                         
-                    if (saga.IsCompleted()) continue;
-                        
                     if (!handled)
                         await Task.Delay(100);
                 }
@@ -44,3 +49,4 @@ public class SagaEngine : ISagaEngine
         }
     }
 }
+
